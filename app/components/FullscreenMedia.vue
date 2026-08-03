@@ -217,6 +217,7 @@ onBeforeUnmount(() => {
 .fullscreen-dialog.is-expanded { background: #000; }
 .fullscreen-content {
   position: fixed;
+  display: block;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -226,10 +227,21 @@ onBeforeUnmount(() => {
   transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .fullscreen-dialog.is-expanded .fullscreen-content { border-radius: 0; }
-.fullscreen-content :deep(img),
-.fullscreen-content :deep(video) {
+.fullscreen-content :deep(> *) {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+}
+.fullscreen-content :deep(img),
+.fullscreen-content :deep(video) {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none;
+  max-height: none;
   object-fit: contain;
   border-radius: 0;
 }
