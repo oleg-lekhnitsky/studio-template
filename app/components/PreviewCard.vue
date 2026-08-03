@@ -29,7 +29,11 @@ const posterUrl = useSanityImage()
 
 <style scoped>
 .card { display: block; }
-.visual { overflow: hidden; border-radius: var(--radius); }
+.visual {
+  overflow: hidden;
+  border-radius: var(--radius);
+  clip-path: inset(0 round var(--radius));
+}
 .visual:has(.placeholder) { aspect-ratio: 4 / 3; }
 .visual :deep(img), .visual video { height: auto; transition: transform .35s; }
 .card:hover { opacity: 1; }
