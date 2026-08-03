@@ -61,6 +61,7 @@ const mediaDataSanity = computed(() => props.sanityPath
 
 .hero-media-frame {
   width: calc(100% - var(--space) * 2);
+  aspect-ratio: 16 / 9;
   margin-top: var(--space);
   margin-inline: var(--space);
   border-radius: var(--radius);
@@ -69,7 +70,14 @@ const mediaDataSanity = computed(() => props.sanityPath
 
 .hero-media-frame .hero-media {
   width: 100%;
+  height: 100%;
   margin: 0;
+}
+
+.hero-media-frame :deep(video) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .hero-placeholder {
