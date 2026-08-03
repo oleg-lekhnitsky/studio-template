@@ -8,6 +8,7 @@ const items = computed(() => data.value?.length ? data.value : useDemoCases())
 const selectedCategory = ref('All')
 const displayedCategory = ref('All')
 const cardsVisible = ref(true)
+const masonryColumnCount = ref(4)
 let filterSequence = 0
 const categories = computed(() => [
   'All',
@@ -16,6 +17,16 @@ const categories = computed(() => [
 const filteredItems = computed(() => displayedCategory.value === 'All'
   ? items.value
   : items.value.filter(item => item.categories?.includes(displayedCategory.value)))
+const masonryColumns = computed(() => {
+  const columns = Array.from({ length: masonryColumnCount.value }, () => [] as Array<{ item: CasePreview; index: number }>)
+  filteredItems.value.forEach((item, index) => columns[index % masonryColumnCount.value]?.push({ item, index }))
+  return columns
+})
+
+function syncMasonryColumns() {
+  const width = window.innerWidth
+  masonryColumnCount.value = width <= 520 ? 1 : width <= 800 ? 2 : width <= 1100 ? 3 : 4
+}
 
 async function selectCategory(category: string) {
   if (category === selectedCategory.value && cardsVisible.value) return
@@ -43,8 +54,15 @@ function closeOnEscape(event: KeyboardEvent) {
   if (event.key === 'Escape') closeCases()
 }
 
-onMounted(() => window.addEventListener('keydown', closeOnEscape))
-onBeforeUnmount(() => window.removeEventListener('keydown', closeOnEscape))
+onMounted(() => {
+  syncMasonryColumns()
+  window.addEventListener('resize', syncMasonryColumns)
+  window.addEventListener('keydown', closeOnEscape)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', syncMasonryColumns)
+  window.removeEventListener('keydown', closeOnEscape)
+})
 usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projects from our creative studio.')
 </script>
 
@@ -73,9 +91,12 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
           </svg>
         </button>
       </header>
-      <section class="masonry" :class="{ 'cards-hidden': !cardsVisible }">
-        <PreviewCard v-for="(item, index) in filteredItems" :key="item._id" :item="item" :index="index"
-          :style="{ '--case-stagger': `${Math.min(index, 8) * 18}ms` }" />
+      <section class="masonry" :class="{ 'cards-hidden': !cardsVisible }"
+        :style="{ '--masonry-columns': masonryColumnCount }">
+        <div v-for="(column, columnIndex) in masonryColumns" :key="columnIndex" class="masonry-column">
+          <PreviewCard v-for="entry in column" :key="entry.item._id" :item="entry.item" :index="entry.index"
+            :style="{ '--case-stagger': `${Math.min(entry.index, 8) * 18}ms` }" />
+        </div>
       </section>
     </main>
   </PageFrame>
@@ -147,8 +168,15 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
 .close-index svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 .masonry {
-  columns: 4;
-  column-gap: var(--space);
+  display: grid;
+  grid-template-columns: repeat(var(--masonry-columns), minmax(0, 1fr));
+  gap: var(--space);
+}
+
+.masonry-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
 }
 
 .masonry.cards-hidden :deep(.card) {
@@ -157,11 +185,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
 }
 
 .masonry :deep(.card) {
-  display: inline-block;
   width: 100%;
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
   margin-bottom: calc(var(--space) * 2);
   opacity: 1;
   transform: translateY(0);
@@ -177,19 +201,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 1100px) {
-  .masonry { columns: 3; }
-}
-
-@media (max-width: 800px) {
-  .masonry { columns: 2; }
-}
-
 @media (max-width: 520px) {
-  .masonry {
-    columns: 1;
-  }
-
   .index-toolbar { grid-template-columns: 1fr auto; }
   .case-filter { grid-column: 1; }
 }
