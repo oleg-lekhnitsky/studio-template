@@ -1,0 +1,35 @@
+{
+  "name": "portfolio-nuxt-sanity",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "studio"
+  ],
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "studio": "cd studio && CHOKIDAR_USEPOLLING=1 sanity dev",
+    "studio:deploy": "cd studio && sanity deploy"
+  },
+  "dependencies": {
+    "@nuxt/image": "2.1.0",
+    "@nuxtjs/sanity": "2.5.0",
+    "@portabletext/types": "4.0.2",
+    "@portabletext/vue": "1.0.14",
+    "@sanity/image-url": "2.1.1",
+    "@sanity/vision": "6.8.0",
+    "nuxt": "4.5.1",
+    "sanity": "6.8.0",
+    "styled-components": "6.4.4",
+    "vue": "3.5.40",
+    "vue-router": "5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.2",
+    "typescript": "5.9.3",
+    "vue-tsc": "3.3.9"
+  }
+}
