@@ -62,9 +62,15 @@ const mediaDataSanity = computed(() => props.sanityPath
 .hero-media-frame {
   width: calc(100% - var(--space) * 2);
   aspect-ratio: 16 / 9;
+  min-height: 0;
   margin-top: var(--space);
   margin-inline: var(--space);
   border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.hero-media-frame :deep(.media-source) {
+  height: 100%;
   overflow: hidden;
 }
 
