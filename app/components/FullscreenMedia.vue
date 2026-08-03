@@ -176,7 +176,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.fullscreen-media { width: 100%; }
+.fullscreen-media { min-width: 0; }
 .fullscreen-media.is-open .media-source { visibility: hidden; }
 .media-source { position: relative; width: 100%; }
 .media-trigger {
