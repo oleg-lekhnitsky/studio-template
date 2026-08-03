@@ -35,6 +35,7 @@ const props = withDefaults(defineProps<{ label?: string }>(), {
 })
 
 const isSanityPresentation = useIsSanityPresentationTool()
+const isMobile = ref(false)
 const isOpen = ref(false)
 const isExpanded = ref(false)
 const suppressTriggerRing = ref(false)
@@ -45,6 +46,12 @@ const dialog = ref<HTMLElement>()
 const frame = ref({ top: 0, left: 0, width: 0, height: 0 })
 let sourceVideo: HTMLVideoElement | null = null
 let entry: FullscreenEntry
+let mobileQuery: MediaQueryList | undefined
+
+function syncMobile(event: MediaQueryList | MediaQueryListEvent) {
+  isMobile.value = event.matches
+  if (event.matches && isOpen.value) close()
+}
 
 const frameStyle = computed(() => ({
   top: `${frame.value.top}px`,
@@ -134,11 +141,15 @@ function navigate(direction: -1 | 1) {
 }
 
 onMounted(() => {
+  mobileQuery = window.matchMedia('(max-width: 720px)')
+  syncMobile(mobileQuery)
+  mobileQuery.addEventListener('change', syncMobile)
   entry = { openFromHandoff, closeForHandoff }
   fullscreenEntries.push(entry)
 })
 
 onBeforeUnmount(() => {
+  mobileQuery?.removeEventListener('change', syncMobile)
   const index = fullscreenEntries.indexOf(entry)
   if (index >= 0) fullscreenEntries.splice(index, 1)
   if (isOpen.value && import.meta.client) unlockPage()
@@ -149,7 +160,7 @@ onBeforeUnmount(() => {
   <div class="fullscreen-media" :class="{ 'is-open': isOpen }">
     <div ref="source" class="media-source">
       <slot />
-      <button v-if="!isSanityPresentation" ref="trigger" class="media-trigger" :class="{ 'suppress-focus-ring': suppressTriggerRing }"
+      <button v-if="!isSanityPresentation && !isMobile" ref="trigger" class="media-trigger" :class="{ 'suppress-focus-ring': suppressTriggerRing }"
         type="button" :aria-label="props.label" @click="open" @blur="suppressTriggerRing = false" />
     </div>
 
@@ -192,6 +203,9 @@ onBeforeUnmount(() => {
 .media-trigger.suppress-focus-ring:focus { outline: none; }
 .media-trigger > .open-button,
 .media-trigger > .open-cursor { display: none !important; }
+@media (max-width: 720px) {
+  .media-trigger { display: none; }
+}
 .fullscreen-dialog {
   position: fixed;
   z-index: 1000;
