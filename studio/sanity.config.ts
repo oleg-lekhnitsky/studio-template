@@ -6,6 +6,7 @@ import { schemaTypes } from './schemaTypes'
 
 const siteSettingsId = '4e409066-8870-4256-9bd0-a6b3b930ec39'
 const previewUrl = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:3000'
+const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
 
 const mainDocuments = defineDocuments([
   {
@@ -50,9 +51,9 @@ const locations = {
 
 export default defineConfig({
   name: 'portfolio',
-  title: 'Portfolio',
+  title: `Portfolio — ${dataset}`,
   projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'v8alcn6p',
-  dataset: process.env.SANITY_STUDIO_DATASET || 'production',
+  dataset,
   plugins: [
     structureTool({
       structure: S => S.list()
