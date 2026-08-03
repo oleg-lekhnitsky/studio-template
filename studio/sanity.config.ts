@@ -5,8 +5,10 @@ import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './schemaTypes'
 
 const siteSettingsId = '4e409066-8870-4256-9bd0-a6b3b930ec39'
-const previewUrl = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:3000'
-const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'v8alcn6p'
+const defaultPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:3000'
+const productionPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL_PRODUCTION || defaultPreviewUrl
+const versionTwoPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL_VERSION_TWO || defaultPreviewUrl
 
 const mainDocuments = defineDocuments([
   {
@@ -49,10 +51,24 @@ const locations = {
   })
 }
 
-export default defineConfig({
-  name: 'portfolio',
-  title: `Portfolio — ${dataset}`,
-  projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'v8alcn6p',
+function workspace({
+  name,
+  title,
+  basePath,
+  dataset,
+  previewUrl
+}: {
+  name: string
+  title: string
+  basePath: string
+  dataset: string
+  previewUrl: string
+}) {
+  return {
+  name,
+  title,
+  basePath,
+  projectId,
   dataset,
   plugins: [
     structureTool({
@@ -90,4 +106,22 @@ export default defineConfig({
       ? previous.filter(action => action.action !== 'duplicate' && action.action !== 'delete')
       : previous
   }
-})
+  }
+}
+
+export default defineConfig([
+  workspace({
+    name: 'production',
+    title: 'Portfolio — Production',
+    basePath: '/production',
+    dataset: 'production',
+    previewUrl: productionPreviewUrl
+  }),
+  workspace({
+    name: 'version-two',
+    title: 'Portfolio — Version Two',
+    basePath: '/version-two',
+    dataset: 'version-two',
+    previewUrl: versionTwoPreviewUrl
+  })
+])
