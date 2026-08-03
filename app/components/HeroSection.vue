@@ -27,12 +27,13 @@ const mediaDataSanity = computed(() => props.sanityPath
 
 <template>
   <section class="hero">
-    <FullscreenMedia v-if="videoUrl" class="hero-media-frame" label="Open hero video fullscreen"
+    <FullscreenMedia v-if="videoUrl" class="hero-media-frame" label="Open hero video fullscreen" preload-fullscreen
       :data-sanity="mediaDataSanity">
       <AutoplayVideo class="hero-media" :src="videoUrl" :poster="imageUrl(poster || image, 2400)" />
       <template #fullscreen>
-        <video :src="videoUrl" :poster="imageUrl(poster || image, 2400)"
-          autoplay muted loop playsinline controls preload="metadata" />
+        <video class="fullscreen-asset" :src="videoUrl" :poster="imageUrl(poster || image, 2400)"
+          muted loop playsinline controls preload="auto"
+          style="position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:0;object-fit:contain" />
       </template>
     </FullscreenMedia>
     <NuxtImg v-else-if="image?.asset?._ref" class="hero-media" provider="sanity"

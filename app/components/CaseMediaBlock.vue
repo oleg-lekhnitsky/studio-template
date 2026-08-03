@@ -21,16 +21,17 @@ const dimensions = computed(() => props.block._type === 'galleryImage'
           : 'sm:100vw md:100vw lg:100vw xl:100vw 2xl:100vw'"
         :modifiers="{ crop: block.image.crop, hotspot: block.image.hotspot }" loading="lazy" />
       <template #fullscreen>
-        <NuxtImg provider="sanity" :src="block.image.asset._ref" :alt="block.image.alt || ''"
-          :width="dimensions.width" :height="dimensions.height" sizes="100vw"
-          :modifiers="{ crop: block.image.crop, hotspot: block.image.hotspot }" />
+        <img class="fullscreen-asset" :src="imageUrl(block.image, 2400)" :alt="block.image.alt || ''"
+          :width="dimensions.width" :height="dimensions.height"
+          style="position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:0;object-fit:contain" />
       </template>
     </FullscreenMedia>
-    <FullscreenMedia v-else-if="block._type === 'video'" label="Open case video fullscreen">
+    <FullscreenMedia v-else-if="block._type === 'video'" label="Open case video fullscreen" preload-fullscreen>
       <AutoplayVideo :src="block.fileUrl || block.url" :poster="imageUrl(block.poster, 1600)" />
       <template #fullscreen>
-        <video :src="block.fileUrl || block.url" :poster="imageUrl(block.poster, 2000)"
-          autoplay muted loop playsinline controls preload="metadata" />
+        <video class="fullscreen-asset" :src="block.fileUrl || block.url" :poster="imageUrl(block.poster, 2000)"
+          muted loop playsinline controls preload="auto"
+          style="position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:0;object-fit:contain" />
       </template>
     </FullscreenMedia>
     <template v-else-if="block._type === 'textBlock' && block.text">

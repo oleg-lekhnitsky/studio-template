@@ -30,12 +30,14 @@ function unlockPage() {
 </script>
 
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ label?: string }>(), {
-  label: 'Open media fullscreen'
+const props = withDefaults(defineProps<{ label?: string; preloadFullscreen?: boolean }>(), {
+  label: 'Open media fullscreen',
+  preloadFullscreen: false
 })
 
 const isSanityPresentation = useIsSanityPresentationTool()
 const isMobile = ref(false)
+const isSafari = ref(false)
 const isOpen = ref(false)
 const isExpanded = ref(false)
 const suppressTriggerRing = ref(false)
@@ -44,7 +46,9 @@ const trigger = ref<HTMLButtonElement>()
 const closeButton = ref<HTMLButtonElement>()
 const dialog = ref<HTMLElement>()
 const frame = ref({ top: 0, left: 0, width: 0, height: 0 })
+const safariTransform = ref({ x: 0, y: 0, scaleX: 1, scaleY: 1 })
 let sourceVideo: HTMLVideoElement | null = null
+let fullscreenVideo: HTMLVideoElement | null = null
 let entry: FullscreenEntry
 let mobileQuery: MediaQueryList | undefined
 
@@ -57,7 +61,11 @@ const frameStyle = computed(() => ({
   top: `${frame.value.top}px`,
   left: `${frame.value.left}px`,
   width: `${frame.value.width}px`,
-  height: `${frame.value.height}px`
+  height: `${frame.value.height}px`,
+  '--safari-x': `${safariTransform.value.x}px`,
+  '--safari-y': `${safariTransform.value.y}px`,
+  '--safari-scale-x': safariTransform.value.scaleX,
+  '--safari-scale-y': safariTransform.value.scaleY
 }))
 function motionDuration() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 520
@@ -73,13 +81,53 @@ function setFullscreenFrame() {
   frame.value = { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }
 }
 
+function setSafariSourceTransform() {
+  const rect = source.value?.getBoundingClientRect()
+  if (!rect || !rect.width || !rect.height) return
+  const viewportWidth = window.innerWidth
+  const viewportHeight = window.innerHeight
+  const sourceRatio = rect.width / rect.height
+  const viewportRatio = viewportWidth / viewportHeight
+  const containedWidth = viewportRatio > sourceRatio
+    ? viewportHeight * sourceRatio
+    : viewportWidth
+  const containedHeight = viewportRatio > sourceRatio
+    ? viewportHeight
+    : viewportWidth / sourceRatio
+  const containedLeft = (viewportWidth - containedWidth) / 2
+  const containedTop = (viewportHeight - containedHeight) / 2
+  const scale = rect.width / containedWidth
+  safariTransform.value = {
+    x: rect.left - containedLeft * scale,
+    y: rect.top - containedTop * scale,
+    scaleX: scale,
+    scaleY: scale
+  }
+}
+
 async function open() {
-  setSourceFrame()
   sourceVideo = source.value?.querySelector('video') || null
   sourceVideo?.pause()
   lockPage()
+
+  if (isSafari.value) {
+    setSafariSourceTransform()
+    setFullscreenFrame()
+    isExpanded.value = false
+    isOpen.value = true
+    await nextTick()
+    fullscreenVideo = dialog.value?.querySelector('video') || null
+    fullscreenVideo?.play().catch(() => {})
+    closeButton.value?.focus()
+    requestAnimationFrame(() => { isExpanded.value = true })
+    return
+  }
+
+  setSourceFrame()
   isOpen.value = true
   await nextTick()
+  fullscreenVideo = dialog.value?.querySelector('video') || null
+  fullscreenVideo?.play().catch(() => {})
   closeButton.value?.focus()
   requestAnimationFrame(() => {
     setFullscreenFrame()
@@ -89,7 +137,23 @@ async function open() {
 
 async function close() {
   if (!isOpen.value) return
+
+  if (isSafari.value) {
+    fullscreenVideo?.pause()
+    setSafariSourceTransform()
+    isExpanded.value = false
+    await new Promise(resolve => window.setTimeout(resolve, motionDuration()))
+    isOpen.value = false
+    unlockPage()
+    sourceVideo?.play().catch(() => {})
+    suppressTriggerRing.value = true
+    await nextTick()
+    trigger.value?.focus({ preventScroll: true })
+    return
+  }
+
   isExpanded.value = false
+  fullscreenVideo?.pause()
   setSourceFrame()
   await new Promise(resolve => window.setTimeout(resolve, motionDuration()))
   isOpen.value = false
@@ -141,6 +205,7 @@ function navigate(direction: -1 | 1) {
 }
 
 onMounted(() => {
+  isSafari.value = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
   mobileQuery = window.matchMedia('(max-width: 720px)')
   syncMobile(mobileQuery)
   mobileQuery.addEventListener('change', syncMobile)
@@ -165,7 +230,8 @@ onBeforeUnmount(() => {
     </div>
 
     <Teleport to="body">
-      <div v-if="isOpen" ref="dialog" class="fullscreen-dialog" :class="{ 'is-expanded': isExpanded }"
+      <div v-if="isOpen || props.preloadFullscreen" v-show="isOpen" ref="dialog" class="fullscreen-dialog"
+        :class="{ 'is-expanded': isExpanded, 'is-safari': isSafari }"
         role="dialog" aria-modal="true"
         :aria-label="props.label" @click.self="close" @keydown="handleKeydown">
         <button ref="closeButton" class="close-button" type="button" aria-label="Close fullscreen media"
@@ -226,24 +292,27 @@ onBeforeUnmount(() => {
   transition-duration: 520ms;
   transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.fullscreen-dialog.is-expanded .fullscreen-content { border-radius: 0; }
-.fullscreen-content :deep(> *) {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.fullscreen-content :deep(img),
-.fullscreen-content :deep(video) {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none;
-  max-height: none;
-  object-fit: contain;
+.fullscreen-dialog.is-expanded .fullscreen-content {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
   border-radius: 0;
+}
+.fullscreen-dialog.is-safari .fullscreen-content {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  transform: translate3d(var(--safari-x), var(--safari-y), 0)
+    scale(var(--safari-scale-x), var(--safari-scale-y));
+  transform-origin: top left;
+  transition-property: transform, border-radius;
+}
+.fullscreen-dialog.is-safari.is-expanded .fullscreen-content {
+  transform: translate3d(0, 0, 0) scale(1);
 }
 .close-button {
   position: fixed;
@@ -306,5 +375,36 @@ onBeforeUnmount(() => {
   .fullscreen-dialog,
   .fullscreen-content,
   .close-button { transition-duration: .01ms; transition-delay: 0ms; }
+}
+</style>
+
+<!-- Slotted media is rendered in a Teleport. Keep these selectors unscoped so
+Safari cannot lose them while resolving the teleported slot tree. -->
+<style>
+.fullscreen-dialog .fullscreen-content > * {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  object-fit: contain;
+}
+
+.fullscreen-dialog .fullscreen-content img,
+.fullscreen-dialog .fullscreen-content video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  object-fit: contain;
 }
 </style>
