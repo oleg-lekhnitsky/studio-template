@@ -157,7 +157,11 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
 }
 
 .masonry :deep(.card) {
+  display: inline-block;
+  width: 100%;
   break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
   margin-bottom: calc(var(--space) * 2);
   opacity: 1;
   transform: translateY(0);
