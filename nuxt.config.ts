@@ -5,8 +5,11 @@ function getSanityStudioUrl(baseUrl: string, dataset: string) {
   const workspace = dataset === 'version-two' ? 'version-two' : 'production'
   const url = new URL(baseUrl)
   const pathname = url.pathname.replace(/\/$/, '')
+  const workspacePath = /\/(production|version-two)$/
 
-  if (pathname !== `/${workspace}`) {
+  if (workspacePath.test(pathname)) {
+    url.pathname = pathname.replace(workspacePath, `/${workspace}`)
+  } else {
     url.pathname = `${pathname}/${workspace}`
   }
 
