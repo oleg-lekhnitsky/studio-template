@@ -85,9 +85,27 @@ export function sanityImageDimensions(ref?: string) {
 export function useSanityImage() {
   const { client } = useSanity()
   const builder = createImageUrlBuilder(client)
-  return (source?: SanityImageSource, width = 1600) => source
-    ? builder.image(source).width(width).fit('max').auto('format').url()
-    : ''
+
+  return (source?: SanityImageSource, width = 1600) => {
+    if (!source) return ''
+
+    if (typeof source === 'object' && !Array.isArray(source)) {
+      const candidate = source as {
+        asset?: unknown
+        _id?: string
+        _ref?: string
+        url?: string
+      }
+
+      if (!candidate.asset && !candidate._id && !candidate._ref && !candidate.url) return ''
+    }
+
+    try {
+      return builder.image(source).width(width).fit('max').auto('format').url()
+    } catch {
+      return ''
+    }
+  }
 }
 
 export type { CasePreview, CaseStudy }
