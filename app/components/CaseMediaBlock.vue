@@ -31,9 +31,9 @@ const isVimeoVideo = computed(() => /(?:player\.)?vimeo\.com/i.test(videoSource.
       </template>
     </FullscreenMedia>
     <FullscreenMedia v-else-if="block._type === 'video' && isVimeoVideo" label="Open Vimeo video fullscreen">
-      <VimeoPlayer :src="videoSource" background />
+      <VimeoPlayer :src="videoSource" :aspect-ratio="block.aspectRatio" background />
       <template #fullscreen>
-        <VimeoPlayer :src="videoSource" />
+        <VimeoPlayer :src="videoSource" :aspect-ratio="block.aspectRatio" />
       </template>
     </FullscreenMedia>
     <FullscreenMedia v-else-if="block._type === 'video'" label="Open case video fullscreen" preload-fullscreen>

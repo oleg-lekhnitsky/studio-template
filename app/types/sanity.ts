@@ -21,7 +21,7 @@ export interface CasePreview {
 
 export type CaseBlock =
   | { _key: string; _type: 'galleryImage'; image: SanityImage; width?: 'half' | 'full' }
-  | { _key: string; _type: 'video'; url?: string; fileUrl?: string; poster?: SanityImage; width?: 'half' | 'full' }
+  | { _key: string; _type: 'video'; url?: string; fileUrl?: string; poster?: SanityImage; width?: 'half' | 'full'; aspectRatio?: '16:9' | '4:3' | '1:1' | '4:5' | '9:16' }
   | { _key: string; _type: 'textBlock'; label?: string; text?: TypedObject[]; width?: 'half' | 'full' }
 
 export interface CaseStudy extends CasePreview {

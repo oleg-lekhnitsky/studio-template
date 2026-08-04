@@ -4,8 +4,15 @@ import { stegaClean } from '@sanity/client/stega'
 const props = withDefaults(defineProps<{
   src: string
   background?: boolean
+  aspectRatio?: string
 }>(), {
-  background: false
+  background: false,
+  aspectRatio: '16:9'
+})
+
+const playerAspectRatio = computed(() => {
+  const [width, height] = stegaClean(props.aspectRatio).split(':').map(Number)
+  return width > 0 && height > 0 ? `${width} / ${height}` : '16 / 9'
 })
 
 function getVimeoEmbedUrl(source: string) {
@@ -38,7 +45,7 @@ const embedUrl = computed(() => getVimeoEmbedUrl(props.src))
 </script>
 
 <template>
-  <div :class="['vimeo-player', { 'is-inline': background }]">
+  <div :class="['vimeo-player', { 'is-inline': background }]" :style="{ aspectRatio: playerAspectRatio }">
     <iframe v-if="embedUrl" :src="embedUrl" title="Vimeo video player"
       allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
       allowfullscreen />
@@ -49,7 +56,6 @@ const embedUrl = computed(() => getVimeoEmbedUrl(props.src))
 .vimeo-player {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: #000;
 }
