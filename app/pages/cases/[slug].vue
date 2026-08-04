@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { CaseStudy } from '~/types/sanity'
+import type { CaseStudy, SiteSettings } from '~/types/sanity'
 
 const route = useRoute()
+const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
+if (settings.value?.disableCases) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 const { data: project } = await useSanityQuery<CaseStudy>(caseQuery, { slug: route.params.slug })
 const demo = computed(() => useDemoCases().find(item => item.slug === route.params.slug))
 const current = computed(() => project.value || demo.value)

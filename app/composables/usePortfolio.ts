@@ -23,6 +23,10 @@ export const caseQuery = groq`*[_type == "case" && slug.current == $slug][0] {
 }`
 
 export const siteSettingsQuery = groq`*[_type == "siteSettings" && _id == "${siteSettingsId}"][0] {
+  disableCases,
+  disableAbout,
+  disableJobs,
+  disableContact,
   seoTitle,
   seoDescription,
   ogImage,

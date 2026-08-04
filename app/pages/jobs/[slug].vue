@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { Job } from '~/types/sanity'
+import type { Job, SiteSettings } from '~/types/sanity'
 
 const route = useRoute()
+const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
+if (settings.value?.disableJobs) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 const { data: job } = await useSanityQuery<Job>(jobQuery, { slug: route.params.slug })
 if (!job.value) throw createError({ statusCode: 404, statusMessage: 'Job not found' })
 

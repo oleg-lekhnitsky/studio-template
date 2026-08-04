@@ -3,6 +3,7 @@ import type { CasePreview, SiteSettings } from '~/types/sanity'
 
 const { data } = await useSanityQuery<CasePreview[]>(casesQuery)
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
+if (settings.value?.disableCases) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 const router = useRouter()
 const items = computed(() => data.value?.length ? data.value : useDemoCases())
 const selectedCategory = ref('All')

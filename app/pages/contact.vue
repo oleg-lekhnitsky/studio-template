@@ -2,6 +2,7 @@
 import type { SiteSettings } from '~/types/sanity'
 
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
+if (settings.value?.disableContact) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 usePageSeo(() => settings.value?.contactSeo, 'Contact — Yuliana', 'Start a project with our creative studio.')
 </script>
 

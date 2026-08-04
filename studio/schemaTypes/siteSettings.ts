@@ -24,6 +24,7 @@ export default defineType({
   type: 'document',
   groups: [
     { name: 'general', title: 'General', default: true },
+    { name: 'pages', title: 'Pages' },
     { name: 'home', title: 'Home' },
     { name: 'about', title: 'About' },
     { name: 'jobs', title: 'Jobs' },
@@ -31,6 +32,38 @@ export default defineType({
     { name: 'seo', title: 'SEO' }
   ],
   fields: [
+    defineField({
+      name: 'disableCases',
+      title: 'Disable Cases page',
+      description: 'Hides Cases from navigation and makes Cases URLs unavailable.',
+      type: 'boolean',
+      group: 'pages',
+      initialValue: false
+    }),
+    defineField({
+      name: 'disableAbout',
+      title: 'Disable About page',
+      description: 'Hides About from navigation and makes the About URL unavailable.',
+      type: 'boolean',
+      group: 'pages',
+      initialValue: false
+    }),
+    defineField({
+      name: 'disableJobs',
+      title: 'Disable Jobs page',
+      description: 'Hides Jobs from navigation and makes all Jobs URLs unavailable.',
+      type: 'boolean',
+      group: 'pages',
+      initialValue: false
+    }),
+    defineField({
+      name: 'disableContact',
+      title: 'Disable Contact page',
+      description: 'Hides Contact from navigation and makes the Contact URL unavailable.',
+      type: 'boolean',
+      group: 'pages',
+      initialValue: false
+    }),
     defineField({
       name: 'seoTitle',
       title: 'Website title',

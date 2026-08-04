@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { SiteSettings } from '~/types/sanity'
+
+defineProps<{ settings?: SiteSettings | null }>()
+
 const navigation = ref<HTMLElement | null>(null)
 const navigationStyle = ref<Record<string, string>>({})
 const navigationChanging = ref(false)
@@ -58,7 +62,7 @@ onBeforeUnmount(() => {
       changing: navigationChanging,
       'over-footer': navigationOverFooter
     }]" :style="navigationStyle">
-      <SiteNavigation />
+      <SiteNavigation :settings="settings" />
     </div>
   </header>
 </template>

@@ -3,6 +3,7 @@ import type { JobPreview, SiteSettings } from '~/types/sanity'
 
 const { data: jobs } = await useSanityQuery<JobPreview[]>(jobsQuery)
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
+if (settings.value?.disableJobs) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 usePageSeo(() => settings.value?.jobsSeo, 'Jobs — Yuliana', 'Open roles and opportunities at our creative studio.')
 </script>
 

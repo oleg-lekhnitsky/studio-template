@@ -52,7 +52,7 @@ useHead({
   <div class="app-shell" :class="{ 'cases-index-mode': isCasesIndex }">
     <NuxtLoadingIndicator color="var(--accent)" />
     <div class="site-shell" :class="{ 'cases-index-mode': isCasesIndex }">
-      <SiteHeader v-if="!isCasesIndex" />
+      <SiteHeader v-if="!isCasesIndex" :settings="siteSettings" />
       <div class="site-content">
         <NuxtPage :transition="{ name: 'page', mode: 'out-in', onAfterLeave: syncShellToRoute }" />
       </div>

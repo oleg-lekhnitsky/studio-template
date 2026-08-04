@@ -50,6 +50,10 @@ export interface SocialLink {
 }
 
 export interface SiteSettings {
+  disableCases?: boolean
+  disableAbout?: boolean
+  disableJobs?: boolean
+  disableContact?: boolean
   seoTitle?: string
   seoDescription?: string
   ogImage?: SanityImage

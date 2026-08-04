@@ -12,10 +12,10 @@ const headline = computed(() => settings.value?.heroHeadline || 'Ideas, identiti
     <main class="page">
       <HeroSection :headline="headline" :video-url="settings?.heroVideoUrl" :poster="settings?.heroPoster"
         sanity-path="heroVideo" />
-      <section class="home-grid">
+      <section v-if="!settings?.disableCases" class="home-grid">
         <PreviewCard v-for="(item, index) in items" :key="item._id" :item="item" :index="index" />
       </section>
-      <NuxtLink class="show-all primary-button" to="/cases">View all cases</NuxtLink>
+      <NuxtLink v-if="!settings?.disableCases" class="show-all primary-button" to="/cases">View all cases</NuxtLink>
     </main>
   </PageFrame>
 </template>

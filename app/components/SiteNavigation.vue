@@ -1,9 +1,15 @@
+<script setup lang="ts">
+import type { SiteSettings } from '~/types/sanity'
+
+defineProps<{ settings?: SiteSettings | null }>()
+</script>
+
 <template>
   <nav aria-label="Main navigation">
-    <NuxtLink to="/cases">Cases</NuxtLink>
-    <NuxtLink to="/about">About</NuxtLink>
-    <NuxtLink to="/jobs">Jobs</NuxtLink>
-    <NuxtLink to="/contact">Contact</NuxtLink>
+    <NuxtLink v-if="!settings?.disableCases" to="/cases">Cases</NuxtLink>
+    <NuxtLink v-if="!settings?.disableAbout" to="/about">About</NuxtLink>
+    <NuxtLink v-if="!settings?.disableJobs" to="/jobs">Jobs</NuxtLink>
+    <NuxtLink v-if="!settings?.disableContact" to="/contact">Contact</NuxtLink>
   </nav>
 </template>
 
