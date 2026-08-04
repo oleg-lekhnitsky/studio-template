@@ -96,6 +96,11 @@ function workspace({
           disable: '/preview/disable'
         }
       },
+
+        allowOrigins: [
+    new URL(previewUrl).origin,
+    'http://localhost:3000'
+  ],
       resolve: { mainDocuments, locations }
     }),
     visionTool()

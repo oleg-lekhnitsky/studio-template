@@ -9,8 +9,11 @@ const items = computed(() => data.value?.length ? data.value : useDemoCases())
 const selectedCategory = ref('All')
 const displayedCategory = ref('All')
 const cardsVisible = ref(true)
+const toolbarVisible = ref(true)
 const masonryColumnCount = ref(4)
 let filterSequence = 0
+let lastScrollY = 0
+let scrollFrame = 0
 const categories = computed(() => [
   'All',
   ...Array.from(new Set(items.value.flatMap(item => item.categories || [])))
@@ -55,14 +58,31 @@ function closeOnEscape(event: KeyboardEvent) {
   if (event.key === 'Escape') closeCases()
 }
 
+function updateToolbarVisibility() {
+  cancelAnimationFrame(scrollFrame)
+  scrollFrame = requestAnimationFrame(() => {
+    const currentScrollY = Math.max(window.scrollY, 0)
+    const difference = currentScrollY - lastScrollY
+
+    if (currentScrollY <= 48 || difference < -2) toolbarVisible.value = true
+    else if (difference > 2) toolbarVisible.value = false
+
+    lastScrollY = currentScrollY
+  })
+}
+
 onMounted(() => {
   syncMasonryColumns()
+  lastScrollY = window.scrollY
   window.addEventListener('resize', syncMasonryColumns)
   window.addEventListener('keydown', closeOnEscape)
+  window.addEventListener('scroll', updateToolbarVisibility, { passive: true })
 })
 onBeforeUnmount(() => {
+  cancelAnimationFrame(scrollFrame)
   window.removeEventListener('resize', syncMasonryColumns)
   window.removeEventListener('keydown', closeOnEscape)
+  window.removeEventListener('scroll', updateToolbarVisibility)
 })
 usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projects from our creative studio.')
 </script>
@@ -70,7 +90,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
 <template>
   <PageFrame>
     <main class="cases-index">
-      <header class="index-toolbar">
+      <header class="index-toolbar" :class="{ 'toolbar-hidden': !toolbarVisible }">
         <section class="case-filter" aria-labelledby="case-filter-label">
           <span id="case-filter-label">I want to see</span>
           <div class="filter-options">
@@ -110,11 +130,26 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
 }
 
 .index-toolbar {
+  position: sticky;
+  z-index: 4;
+  top: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: start;
   gap: var(--space);
-  margin-bottom: var(--space);
+  margin-top: calc(var(--space) * -1);
+  padding-top: var(--space);
+  padding-bottom: var(--space);
+  background: var(--background);
+  transition:
+    opacity 180ms ease-out,
+    transform 240ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.index-toolbar.toolbar-hidden {
+  opacity: 0;
+  transform: translateY(calc(-100% - var(--space)));
+  pointer-events: none;
 }
 
 .case-filter {
@@ -123,13 +158,13 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
   min-height: 44px;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0 var(--space);
+  gap: 2px var(--space);
 }
 
 .filter-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 var(--space);
+  gap: 2px var(--space);
 }
 
 .filter-options button {
@@ -208,6 +243,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .index-toolbar { transition-duration: .01ms; }
   .masonry :deep(.card) { animation: none; transition: none; }
   .close-index { transition-duration: .01ms; }
   .close-index:active { scale: 1; }
