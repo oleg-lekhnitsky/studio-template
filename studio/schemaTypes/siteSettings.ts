@@ -134,6 +134,46 @@ export default defineType({
       validation: rule => rule.max(70)
     }),
     defineField({
+      name: 'headerText',
+      title: 'Header text fallback',
+      description: 'Shown when no SVG or Lottie logo is uploaded.',
+      type: 'string',
+      group: 'general',
+      initialValue: 'Studio',
+      validation: rule => rule.max(60)
+    }),
+    defineField({
+      name: 'headerLogoSvg',
+      title: 'Header SVG logo',
+      description: 'Optional SVG logo. A Lottie logo takes priority when both files are present.',
+      type: 'file',
+      group: 'general',
+      options: { accept: 'image/svg+xml' }
+    }),
+    defineField({
+      name: 'headerLogoColorMode',
+      title: 'SVG logo colors',
+      type: 'string',
+      group: 'general',
+      initialValue: 'theme',
+      options: {
+        list: [
+          { title: 'Follow website theme', value: 'theme' },
+          { title: 'Keep original SVG colors', value: 'original' }
+        ],
+        layout: 'radio'
+      },
+      hidden: ({ document }) => !document?.headerLogoSvg
+    }),
+    defineField({
+      name: 'headerLogoLottie',
+      title: 'Header Lottie animation',
+      description: 'Optional Bodymovin/Lottie JSON file. Its authored colors are preserved.',
+      type: 'file',
+      group: 'general',
+      options: { accept: 'application/json,.json' }
+    }),
+    defineField({
       name: 'footerWordmark',
       title: 'Footer large name',
       description: 'Large fitted name displayed at the bottom of the footer.',
@@ -141,6 +181,15 @@ export default defineType({
       group: 'general',
       initialValue: 'Yuliana',
       validation: rule => rule.max(60)
+    }),
+    defineField({
+      name: 'footerDescription',
+      title: 'Footer description',
+      description: 'Short text displayed in the footer beside the navigation.',
+      type: 'string',
+      group: 'general',
+      initialValue: 'Independent creative studio',
+      validation: rule => rule.max(120)
     }),
     defineField({
       name: 'seoDescription',

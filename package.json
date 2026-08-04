@@ -21,6 +21,7 @@
     "@portabletext/vue": "1.0.14",
     "@sanity/image-url": "2.1.1",
     "@sanity/vision": "6.8.0",
+    "lottie-web": "^5.13.0",
     "nuxt": "4.5.1",
     "sanity": "6.8.0",
     "styled-components": "6.4.4",

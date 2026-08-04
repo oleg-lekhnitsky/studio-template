@@ -4,7 +4,11 @@ import type { SocialLink } from '~/types/sanity'
 const props = withDefaults(defineProps<{
   socialLinks?: SocialLink[]
   wordmarkLabel?: string
-}>(), { wordmarkLabel: 'Yuliana' })
+  description?: string
+}>(), {
+  wordmarkLabel: 'Yuliana',
+  description: 'Independent creative studio'
+})
 
 const wordmark = ref<HTMLElement | null>(null)
 const wordmarkSize = ref('20vw')
@@ -47,7 +51,7 @@ onBeforeUnmount(() => observer?.disconnect())
 <template>
   <footer class="footer">
     <div class="footer-meta">
-      <span>Independent creative studio</span>
+      <span>{{ description }}</span>
       <div v-if="socialLinks?.length" class="footer-socials">
         <SocialLinks :links="socialLinks" />
       </div>

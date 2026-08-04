@@ -57,7 +57,14 @@ onBeforeUnmount(() => {
 
 <template>
   <header class="header">
-    <NuxtLink to="/">Studio</NuxtLink>
+    <NuxtLink class="header-identity-link" to="/" :aria-label="`${settings?.headerText || 'Studio'} home`">
+      <HeaderIdentity
+        :text="settings?.headerText || 'Studio'"
+        :svg-url="settings?.headerLogoSvgUrl"
+        :svg-color-mode="settings?.headerLogoColorMode || 'theme'"
+        :lottie-url="settings?.headerLogoLottieUrl"
+      />
+    </NuxtLink>
     <div ref="navigation" :class="['header-navigation', {
       changing: navigationChanging,
       'over-footer': navigationOverFooter
@@ -94,6 +101,12 @@ onBeforeUnmount(() => {
 
 .header-navigation.changing { opacity: 0; transform: translateY(20px); }
 .header-navigation.over-footer { color: #000; }
+
+.header-identity-link {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+}
 
 .header > a:focus-visible {
   outline: none;

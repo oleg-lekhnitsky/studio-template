@@ -63,6 +63,11 @@ export interface SiteSettings {
   disableJobs?: boolean
   disableContact?: boolean
   footerWordmark?: string
+  footerDescription?: string
+  headerText?: string
+  headerLogoSvgUrl?: string
+  headerLogoColorMode?: 'theme' | 'original'
+  headerLogoLottieUrl?: string
   seoTitle?: string
   seoDescription?: string
   ogImage?: SanityImage
