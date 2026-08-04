@@ -8,6 +8,10 @@ const spanClass = computed(() => cleanWidth.value === 'half' ? 'half' : 'full')
 const dimensions = computed(() => props.block._type === 'galleryImage'
   ? sanityImageDimensions(props.block.image.asset?._ref)
   : { width: 1600, height: 1000 })
+const videoSource = computed(() => props.block._type === 'video'
+  ? stegaClean(props.block.fileUrl || props.block.url || '')
+  : '')
+const isVimeoVideo = computed(() => /(?:player\.)?vimeo\.com/i.test(videoSource.value))
 </script>
 
 <template>
@@ -26,10 +30,16 @@ const dimensions = computed(() => props.block._type === 'galleryImage'
           style="position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:0;object-fit:contain" />
       </template>
     </FullscreenMedia>
-    <FullscreenMedia v-else-if="block._type === 'video'" label="Open case video fullscreen" preload-fullscreen>
-      <AutoplayVideo :src="block.fileUrl || block.url" :poster="imageUrl(block.poster, 1600)" />
+    <FullscreenMedia v-else-if="block._type === 'video' && isVimeoVideo" label="Open Vimeo video fullscreen">
+      <VimeoPlayer :src="videoSource" background />
       <template #fullscreen>
-        <video class="fullscreen-asset" :src="block.fileUrl || block.url" :poster="imageUrl(block.poster, 2000)"
+        <VimeoPlayer :src="videoSource" />
+      </template>
+    </FullscreenMedia>
+    <FullscreenMedia v-else-if="block._type === 'video'" label="Open case video fullscreen" preload-fullscreen>
+      <AutoplayVideo :src="videoSource" :poster="imageUrl(block.poster, 1600)" />
+      <template #fullscreen>
+        <video class="fullscreen-asset" :src="videoSource" :poster="imageUrl(block.poster, 2000)"
           muted loop playsinline controls preload="auto"
           style="position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:0;object-fit:contain" />
       </template>
