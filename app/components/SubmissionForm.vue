@@ -1,10 +1,36 @@
 <script setup lang="ts">
+import type { FormField } from '~/types/sanity'
+
 const props = withDefaults(defineProps<{
   context: string
   successMessage: string
   submitLabel?: string
   showPortfolio?: boolean
+  fields?: FormField[]
 }>(), { submitLabel: 'Send message', showPortfolio: false })
+
+const defaultFields = computed<FormField[]>(() => [
+  { _key: 'name', label: 'Name', type: 'text', required: true },
+  { _key: 'email', label: 'Email', type: 'email', required: true },
+  ...(props.showPortfolio
+    ? [{ _key: 'portfolio', label: 'Portfolio link', type: 'url' as const, placeholder: 'https://yourportfolio.com', required: true }]
+    : []),
+  { _key: 'message', label: 'Message', type: 'textarea', required: true }
+])
+const activeFields = computed(() => props.fields?.length ? props.fields : defaultFields.value)
+const allFieldsRequired = computed(() => activeFields.value.every(field => field.required))
+
+function fieldName(field: FormField) {
+  return `field-${field._key}`
+}
+
+function autocomplete(field: FormField) {
+  if (field.type === 'email') return 'email'
+  if (field.type === 'tel') return 'tel'
+  if (field.type === 'url') return 'url'
+  if (/name/i.test(field.label)) return 'name'
+  return 'off'
+}
 
 const sent = ref(false)
 const sending = ref(false)
@@ -40,10 +66,12 @@ async function submit(event: Event) {
       method: 'POST',
       body: {
         context: props.context,
-        name: values.get('name'),
-        email: values.get('email'),
-        portfolio: values.get('portfolio'),
-        message: values.get('message'),
+        fields: activeFields.value.map(field => ({
+          label: field.label,
+          type: field.type,
+          required: Boolean(field.required),
+          value: values.get(fieldName(field))
+        })),
         company: values.get('company')
       }
     })
@@ -70,27 +98,20 @@ async function submit(event: Event) {
   <div class="submission-form">
     <form :class="{ 'is-sent': sent }" :aria-hidden="sent" :inert="sent" :aria-busy="sending"
       @submit.prevent="submit" @invalid.capture="markInvalid" @input.capture="clearInvalid">
-      <p class="form-note">All fields are required.</p>
+      <p class="form-note">{{ allFieldsRequired ? 'All fields are required.' : 'Required fields are marked *.' }}</p>
       <label class="website" inert>
         Company website
         <input name="company" tabindex="-1" autocomplete="off">
       </label>
-      <label>
-        Name
-        <input name="name" autocomplete="name" maxlength="100" required>
-      </label>
-      <label>
-        Email
-        <input name="email" type="email" autocomplete="email" spellcheck="false" maxlength="254" required>
-      </label>
-      <label v-if="showPortfolio">
-        Portfolio link
-        <input name="portfolio" type="url" autocomplete="url" spellcheck="false"
-          maxlength="500" placeholder="https://yourportfolio.com" required>
-      </label>
-      <label>
-        Message
-        <textarea name="message" rows="6" maxlength="3000" required @keydown="submitFromTextarea" />
+      <label v-for="field in activeFields" :key="field._key" :for="fieldName(field)">
+        <span>{{ field.label }}<span v-if="field.required && !allFieldsRequired" aria-hidden="true"> *</span></span>
+        <textarea v-if="field.type === 'textarea'" :id="fieldName(field)" :name="fieldName(field)"
+          rows="6" maxlength="3000" :placeholder="field.placeholder" :required="field.required"
+          @keydown="submitFromTextarea" />
+        <input v-else :id="fieldName(field)" :name="fieldName(field)" :type="field.type"
+          :autocomplete="autocomplete(field)" :spellcheck="field.type === 'email' || field.type === 'url' ? false : undefined"
+          :maxlength="field.type === 'email' ? 254 : field.type === 'url' ? 500 : 300"
+          :placeholder="field.placeholder" :required="field.required">
       </label>
       <div class="form-actions">
         <button class="primary-button primary-button--left" type="submit" :disabled="sending">

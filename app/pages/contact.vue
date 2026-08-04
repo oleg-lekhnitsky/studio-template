@@ -14,7 +14,7 @@ usePageSeo(() => settings.value?.contactSeo, 'Contact — Yuliana', 'Start a pro
       </div>
       <h1 v-else class="display">Start a project.</h1>
       <div class="contact-form">
-        <ContactForm />
+        <ContactForm :fields="settings?.contactFormFields" />
         <div v-if="settings?.socialLinks?.length" class="contact-socials display">
           <SocialLinks :links="settings.socialLinks" />
         </div>

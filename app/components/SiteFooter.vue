@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { SocialLink } from '~/types/sanity'
 
-defineProps<{ socialLinks?: SocialLink[] }>()
+const props = withDefaults(defineProps<{
+  socialLinks?: SocialLink[]
+  wordmarkLabel?: string
+}>(), { wordmarkLabel: 'Yuliana' })
 
 const wordmark = ref<HTMLElement | null>(null)
 const wordmarkSize = ref('20vw')
 const wordmarkReady = ref(false)
-const wordmarkLabel = 'Yuliana'
 
 let observer: ResizeObserver | undefined
 
@@ -17,7 +19,7 @@ function fitWordmark() {
   const context = document.createElement('canvas').getContext('2d')
   if (!context) return
   context.font = '700 100px "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif'
-  const naturalWidth = context.measureText(wordmarkLabel).width - (wordmarkLabel.length * 4)
+  const naturalWidth = context.measureText(props.wordmarkLabel).width - (props.wordmarkLabel.length * 4)
   if (!naturalWidth) return
 
   wordmarkSize.value = `${100 * ((container.clientWidth - 2) / naturalWidth)}px`
@@ -31,6 +33,12 @@ onMounted(async () => {
   fitWordmark()
   observer = new ResizeObserver(fitWordmark)
   if (wordmark.value) observer.observe(wordmark.value)
+})
+
+watch(() => props.wordmarkLabel, async () => {
+  wordmarkReady.value = false
+  await nextTick()
+  fitWordmark()
 })
 
 onBeforeUnmount(() => observer?.disconnect())

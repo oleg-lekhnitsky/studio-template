@@ -2,11 +2,15 @@ import { useRuntimeConfig } from 'nitropack/runtime'
 
 interface ContactBody {
   context?: unknown
-  name?: unknown
-  email?: unknown
-  portfolio?: unknown
-  message?: unknown
+  fields?: unknown
   company?: unknown
+}
+
+interface SubmittedField {
+  label?: unknown
+  type?: unknown
+  required?: unknown
+  value?: unknown
 }
 
 export default defineEventHandler(async (event) => {
@@ -19,27 +23,31 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<ContactBody>(event)
   if (body.company) return { ok: true }
 
-  const name = typeof body.name === 'string' ? body.name.trim() : ''
   const context = typeof body.context === 'string' ? body.context.trim() : 'Portfolio enquiry'
-  const email = typeof body.email === 'string' ? body.email.trim() : ''
-  const portfolio = typeof body.portfolio === 'string' ? body.portfolio.trim() : ''
-  const message = typeof body.message === 'string' ? body.message.trim() : ''
-
-  if (!name || name.length > 100) {
-    throw createError({ statusCode: 400, statusMessage: 'Enter a valid name' })
-  }
   if (!context || context.length > 150) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid submission context' })
   }
-  if (!/^\S+@\S+\.\S+$/.test(email) || email.length > 254) {
-    throw createError({ statusCode: 400, statusMessage: 'Enter a valid email address' })
+
+  if (!Array.isArray(body.fields) || body.fields.length === 0 || body.fields.length > 20) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid form submission' })
   }
-  if (portfolio && (portfolio.length > 500 || !/^https?:\/\//i.test(portfolio))) {
-    throw createError({ statusCode: 400, statusMessage: 'Enter a valid portfolio link' })
-  }
-  if (!message || message.length > 3000) {
-    throw createError({ statusCode: 400, statusMessage: 'Message must be between 1 and 3000 characters' })
-  }
+
+  const allowedTypes = new Set(['text', 'email', 'url', 'tel', 'textarea'])
+  const fields = (body.fields as SubmittedField[]).map((field) => {
+    const label = typeof field.label === 'string' ? field.label.trim() : ''
+    const type = typeof field.type === 'string' && allowedTypes.has(field.type) ? field.type : 'text'
+    const value = typeof field.value === 'string' ? field.value.trim() : ''
+    if (!label || label.length > 80 || value.length > 3000 || (field.required && !value)) {
+      throw createError({ statusCode: 400, statusMessage: 'Complete all required fields' })
+    }
+    if (value && type === 'email' && (!/^\S+@\S+\.\S+$/.test(value) || value.length > 254)) {
+      throw createError({ statusCode: 400, statusMessage: 'Enter a valid email address' })
+    }
+    if (value && type === 'url' && (value.length > 500 || !/^https?:\/\//i.test(value))) {
+      throw createError({ statusCode: 400, statusMessage: 'Enter a valid URL' })
+    }
+    return { label, value }
+  })
 
   await enforceRateLimit(event, 'contact')
 
@@ -48,7 +56,7 @@ export default defineEventHandler(async (event) => {
       method: 'POST',
       body: {
         chat_id: config.telegramChatId,
-        text: `${context}\n\nName: ${name}\nEmail: ${email}${portfolio ? `\nPortfolio: ${portfolio}` : ''}\n\n${message}`
+        text: `${context}\n\n${fields.map(field => `${field.label}: ${field.value || '—'}`).join('\n\n')}`
       }
     })
   } catch {

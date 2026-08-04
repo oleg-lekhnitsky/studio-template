@@ -1,5 +1,7 @@
 <script setup lang="ts">
-defineProps<{ jobTitle: string }>()
+import type { FormField } from '~/types/sanity'
+
+defineProps<{ jobTitle: string; fields?: FormField[] }>()
 </script>
 
 <template>
@@ -8,5 +10,6 @@ defineProps<{ jobTitle: string }>()
     success-message="Thank you for applying. We’ll be in touch."
     submit-label="Apply"
     show-portfolio
+    :fields="fields"
   />
 </template>

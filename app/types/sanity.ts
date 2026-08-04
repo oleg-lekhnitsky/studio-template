@@ -49,11 +49,20 @@ export interface SocialLink {
   url: string
 }
 
+export interface FormField {
+  _key: string
+  label: string
+  type: 'text' | 'email' | 'url' | 'tel' | 'textarea'
+  placeholder?: string
+  required?: boolean
+}
+
 export interface SiteSettings {
   disableCases?: boolean
   disableAbout?: boolean
   disableJobs?: boolean
   disableContact?: boolean
+  footerWordmark?: string
   seoTitle?: string
   seoDescription?: string
   ogImage?: SanityImage
@@ -62,6 +71,8 @@ export interface SiteSettings {
   aboutSeo?: PageSeo
   contactSeo?: PageSeo
   contactHeading?: TypedObject[]
+  contactFormFields?: FormField[]
+  jobFormFields?: FormField[]
   socialLinks?: SocialLink[]
   heroHeadline?: string
   heroVideoUrl?: string

@@ -34,7 +34,7 @@ useSeoMeta({
         <SanityContent v-if="job.description" class="medium description" :value="job.description" />
         <section class="application">
           <h2 class="medium">Apply for {{ job.title }}</h2>
-          <JobApplicationForm :job-title="job.title" />
+          <JobApplicationForm :job-title="job.title" :fields="settings?.jobFormFields" />
         </section>
       </div>
     </main>

@@ -58,7 +58,8 @@ useHead({
       </div>
     </div>
     <Transition name="page" mode="out-in">
-      <SiteFooter v-if="!isCasesIndex" :key="route.fullPath" :social-links="siteSettings?.socialLinks" />
+      <SiteFooter v-if="!isCasesIndex" :key="route.fullPath" :social-links="siteSettings?.socialLinks"
+        :wordmark-label="siteSettings?.footerWordmark || 'Yuliana'" />
     </Transition>
   </div>
 </template>

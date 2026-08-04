@@ -18,6 +18,68 @@ const pageSeo = (name: string, title: string) => defineField({
   ]
 })
 
+const contactFormFields = [
+  { _key: 'name', _type: 'formField', label: 'Name', type: 'text', required: true },
+  { _key: 'email', _type: 'formField', label: 'Email', type: 'email', required: true },
+  { _key: 'message', _type: 'formField', label: 'Message', type: 'textarea', required: true }
+]
+
+const jobFormFields = [
+  { _key: 'name', _type: 'formField', label: 'Name', type: 'text', required: true },
+  { _key: 'email', _type: 'formField', label: 'Email', type: 'email', required: true },
+  {
+    _key: 'portfolio',
+    _type: 'formField',
+    label: 'Portfolio link',
+    type: 'url',
+    placeholder: 'https://yourportfolio.com',
+    required: true
+  },
+  { _key: 'message', _type: 'formField', label: 'Message', type: 'textarea', required: true }
+]
+
+const formFields = (name: string, title: string, group: string, initialValue: typeof contactFormFields) => defineField({
+  name,
+  title,
+  description: 'Add, remove, and reorder the fields shown in this form. Leave empty to use the default fields.',
+  type: 'array',
+  group,
+  initialValue,
+  of: [{
+    type: 'object',
+    name: 'formField',
+    fields: [
+      defineField({ name: 'label', title: 'Label', type: 'string', validation: rule => rule.required().max(80) }),
+      defineField({
+        name: 'type',
+        title: 'Field type',
+        type: 'string',
+        initialValue: 'text',
+        options: {
+          list: [
+            { title: 'Text', value: 'text' },
+            { title: 'Email', value: 'email' },
+            { title: 'Website / URL', value: 'url' },
+            { title: 'Phone', value: 'tel' },
+            { title: 'Long text', value: 'textarea' }
+          ],
+          layout: 'dropdown'
+        },
+        validation: rule => rule.required()
+      }),
+      defineField({ name: 'placeholder', title: 'Placeholder', type: 'string', validation: rule => rule.max(120) }),
+      defineField({ name: 'required', title: 'Required', type: 'boolean', initialValue: true })
+    ],
+    preview: {
+      select: { title: 'label', type: 'type', required: 'required' },
+      prepare: ({ title, type, required }) => ({
+        title: title || 'Untitled field',
+        subtitle: `${type || 'text'}${required ? ' · required' : ''}`
+      })
+    }
+  }]
+})
+
 export default defineType({
   name: 'siteSettings',
   title: 'Site settings',
@@ -72,6 +134,15 @@ export default defineType({
       validation: rule => rule.max(70)
     }),
     defineField({
+      name: 'footerWordmark',
+      title: 'Footer large name',
+      description: 'Large fitted name displayed at the bottom of the footer.',
+      type: 'string',
+      group: 'general',
+      initialValue: 'Yuliana',
+      validation: rule => rule.max(60)
+    }),
+    defineField({
       name: 'seoDescription',
       title: 'Website description',
       type: 'text',
@@ -92,6 +163,8 @@ export default defineType({
     pageSeo('jobsSeo', 'Jobs page SEO'),
     pageSeo('aboutSeo', 'About page SEO'),
     pageSeo('contactSeo', 'Contact page SEO'),
+    formFields('contactFormFields', 'Contact form fields', 'contact', contactFormFields),
+    formFields('jobFormFields', 'Job application form fields', 'jobs', jobFormFields),
     defineField({
       name: 'contactHeading',
       title: 'Contact page heading',
