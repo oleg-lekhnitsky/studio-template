@@ -38,7 +38,7 @@ const embedUrl = computed(() => getVimeoEmbedUrl(props.src))
 </script>
 
 <template>
-  <div class="vimeo-player">
+  <div :class="['vimeo-player', { 'is-inline': background }]">
     <iframe v-if="embedUrl" :src="embedUrl" title="Vimeo video player"
       allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
       allowfullscreen />
@@ -52,6 +52,10 @@ const embedUrl = computed(() => getVimeoEmbedUrl(props.src))
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: #000;
+}
+
+.vimeo-player.is-inline {
+  border-radius: var(--radius);
 }
 
 iframe {

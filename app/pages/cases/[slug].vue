@@ -35,14 +35,16 @@ useHead({
     })
   }]
 })
-const firstImageIndex = computed(() => project.value?.content?.findIndex(block => block._type === 'galleryImage') ?? -1)
+const firstMediaIndex = computed(() => project.value?.content?.findIndex(block =>
+  block._type === 'galleryImage' || block._type === 'video'
+) ?? -1)
 const leadContent = computed(() => {
   const content = project.value?.content || []
-  return firstImageIndex.value >= 0 ? content.slice(0, firstImageIndex.value + 1) : []
+  return firstMediaIndex.value >= 0 ? content.slice(0, firstMediaIndex.value + 1) : []
 })
 const remainingContent = computed(() => {
   const content = project.value?.content || []
-  return firstImageIndex.value >= 0 ? content.slice(firstImageIndex.value + 1) : content
+  return firstMediaIndex.value >= 0 ? content.slice(firstMediaIndex.value + 1) : content
 })
 if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case not found' })
 </script>
