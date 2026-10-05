@@ -185,6 +185,7 @@ textarea {
 .medium {
   font-size: var(--medium);
   letter-spacing: var(--letter-spacing-medium);
+  font-weight: 600;
 }
 .muted {
   opacity: var(--opacity-muted);
