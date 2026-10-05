@@ -76,8 +76,8 @@ const posterUrl = useSanityImage()
 
 .details {
   display: grid;
-  gap: 2px;
-  line-height: 1.2;
+  gap: 1px;
+  line-height: 1.3;
 }
 
 .description {

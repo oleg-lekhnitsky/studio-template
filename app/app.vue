@@ -61,7 +61,8 @@ useHead({
       <SiteFooter v-if="!isCasesIndex" :key="route.fullPath" :social-links="siteSettings?.socialLinks"
         :wordmark-label="siteSettings?.footerWordmark || 'Yuliana'"
         :clients="siteSettings?.clients"
-        :description="siteSettings?.footerDescription || 'Independent creative studio'" />
+        :description="siteSettings?.footerDescription || 'Independent creative studio'"
+        :mobile-description="siteSettings?.footerMobileDescription" />
     </Transition>
   </div>
 </template>

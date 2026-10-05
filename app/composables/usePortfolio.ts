@@ -32,6 +32,7 @@ export const siteSettingsQuery = groq`*[_type == "siteSettings" && _id == "${sit
   disableContact,
   footerWordmark,
   footerDescription,
+  footerMobileDescription,
   clients,
   headerText,
   "headerLogoSvgUrl": headerLogoSvg.asset->url,

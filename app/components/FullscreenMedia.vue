@@ -380,7 +380,7 @@ onBeforeUnmount(() => {
   padding: 10px;
   border: 0;
   border-radius: 50%;
-  color: #000;
+  color: #141414;
   background: #fff;
   cursor: pointer;
   opacity: 0;

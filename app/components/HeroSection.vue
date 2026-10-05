@@ -127,7 +127,7 @@ h1 {
 
 p {
   font-size: var(--small);
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.4;
   
 }

@@ -77,6 +77,7 @@ export interface SiteSettings {
   disableContact?: boolean
   footerWordmark?: string
   footerDescription?: string
+  footerMobileDescription?: string | null
   clients?: string[] | null
   headerText?: string
   headerLogoSvgUrl?: string

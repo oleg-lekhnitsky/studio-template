@@ -192,6 +192,14 @@ export default defineType({
       validation: rule => rule.max(120)
     }),
     defineField({
+      name: 'footerMobileDescription',
+      title: 'Mobile footer description',
+      type: 'text',
+      group: 'general',
+      rows: 5,
+      initialValue: 'Mmaze is a creative production studio. Big on building stories for brands, launches, awards and things that don’t have a name yet.'
+    }),
+    defineField({
       name: 'clients',
       title: 'Clients',
       description: 'Client names in the scrolling line at the top of the footer. Drag to reorder; remove all names to hide the line.',

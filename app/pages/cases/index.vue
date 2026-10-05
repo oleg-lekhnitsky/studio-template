@@ -239,8 +239,21 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
 }
 
 @media (max-width: 520px) {
-  .index-toolbar { grid-template-columns: 1fr auto; }
-  .case-filter { grid-column: 1; }
+  .index-toolbar {
+    grid-template-columns: 1fr auto;
+    padding-bottom: calc(var(--space) * 2);
+  }
+  .case-filter {
+    grid-column: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space);
+  }
+  .filter-options { gap: var(--space); }
+  .filter-options button {
+    min-height: 0;
+    line-height: 1.2;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

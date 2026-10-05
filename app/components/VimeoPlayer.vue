@@ -57,7 +57,7 @@ const embedUrl = computed(() => getVimeoEmbedUrl(props.src))
   position: relative;
   width: 100%;
   overflow: hidden;
-  background: #000;
+  background: #141414;
 }
 
 .vimeo-player.is-inline {

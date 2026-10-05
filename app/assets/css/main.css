@@ -2,7 +2,7 @@
   --font-family: Inter, sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1;
   --space: clamp(12px, 1vw, 24px);
-  --small: clamp(16px, 1vw, 20px);
+  --small: clamp(13px, 1vw, 20px);
   --medium: clamp(24px, 3vw, 40px);
   --large: clamp(32px, 3.5vw, 72px);
   --letter-spacing: -0.015em;
@@ -13,7 +13,7 @@
   --background: #fff;
   --foreground: #141414;
   --surface: #eee;
-  --button-background: #000;
+  --button-background: #141414;
   --button-foreground: #fff;
   --opacity-muted: .45;
   --opacity-secondary: .3;
@@ -29,11 +29,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #000;
+    --background: #141414;
     --foreground: #fff;
     --surface: #222;
     --button-background: #fff;
-    --button-foreground: #000;
+    --button-foreground: #141414;
     --opacity-muted: .38;
     --opacity-secondary: .5;
     color-scheme: dark;
@@ -45,7 +45,7 @@
 }
 
 ::selection {
-  color: #000;
+  color: #141414;
   background: var(--accent);
 }
 
@@ -63,6 +63,10 @@ body {
   line-height: 1.4;
   letter-spacing: var(--letter-spacing);
   
+}
+
+p {
+  text-wrap: pretty;
 }
 
 a {

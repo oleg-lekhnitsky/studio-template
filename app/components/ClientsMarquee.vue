@@ -50,10 +50,13 @@ const paused = ref(false)
   white-space: nowrap;
 }
 
-.clients:hover .clients-track,
 .clients:focus-within .clients-track,
 .clients.paused .clients-track {
   animation-play-state: paused;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .clients:hover .clients-track { animation-play-state: paused; }
 }
 
 .clients-toggle {
@@ -63,7 +66,7 @@ const paused = ref(false)
   right: var(--space);
   padding: .5em;
   border: 0;
-  color: #000;
+  color: #141414;
   background: var(--accent);
   font-size: var(--small);
   letter-spacing: normal;

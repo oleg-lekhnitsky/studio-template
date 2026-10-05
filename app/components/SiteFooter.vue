@@ -5,6 +5,7 @@ const props = withDefaults(defineProps<{
   socialLinks?: SocialLink[]
   wordmarkLabel?: string
   description?: string
+  mobileDescription?: string | null
   clients?: string[] | null
 }>(), {
   wordmarkLabel: 'Yuliana',
@@ -12,6 +13,7 @@ const props = withDefaults(defineProps<{
 })
 
 const clientNames = computed(() => props.clients ?? ['FinteqHub', 'Softswiss', 'Burger King', 'GYPSY', 'Infingame', 'Clevetura', 'Boomerang', 'LVLX', 'InOut', 'Scatters Club', 'TrueWays'])
+const mobileCopy = computed(() => props.mobileDescription ?? 'Mmaze is a creative production studio. Big on building stories for brands, launches, awards and things that don’t have a name yet.')
 
 const wordmark = ref<HTMLElement | null>(null)
 const wordmarkSize = ref('20vw')
@@ -21,7 +23,7 @@ let observer: ResizeObserver | undefined
 
 function fitWordmark() {
   const container = wordmark.value
-  if (!container) return
+  if (!container || container.clientWidth <= 2) return
 
   const context = document.createElement('canvas').getContext('2d')
   if (!context) return
@@ -53,9 +55,16 @@ onBeforeUnmount(() => observer?.disconnect())
 
 <template>
   <footer class="footer">
-    <ClientsMarquee class="footer-clients" :clients="clientNames" />
+    <NuxtLink class="footer-logo" to="/" :aria-label="`${wordmarkLabel} home`">
+      <img src="/icon.gif" alt="" width="1080" height="1080">
+    </NuxtLink>
+    <div v-if="clientNames.length" class="footer-client-line">
+      <span class="footer-clients-label">Clients:</span>
+      <ClientsMarquee class="footer-clients" :clients="clientNames" />
+    </div>
     <div class="footer-meta">
-      <span>{{ description }}</span>
+      <span class="footer-description">{{ description }}</span>
+      <p v-if="mobileCopy" class="footer-mobile-description">{{ mobileCopy }}</p>
       <div v-if="socialLinks?.length" class="footer-socials">
         <SocialLinks :links="socialLinks" />
       </div>
@@ -83,12 +92,17 @@ onBeforeUnmount(() => observer?.disconnect())
   min-height: 100vh;
   overflow: clip;
   padding: var(--space);
-  color: #000;
+  color: #141414;
   background-color: var(--accent);
 }
 
-.footer-clients {
+.footer-logo,
+.footer-clients-label,
+.footer-mobile-description { display: none; }
+
+.footer-client-line {
   grid-column: 2;
+  min-width: 0;
   margin-right: calc(-1 * var(--space));
 }
 
@@ -138,8 +152,84 @@ onBeforeUnmount(() => observer?.disconnect())
 .footer-wordmark span.ready { visibility: visible; }
 
 @media (max-width: 720px) {
-  .footer { grid-template-columns: 1fr; gap: calc(var(--space) * 4); margin-left: 0; }
-  .footer-clients { grid-column: 1; margin-left: calc(-1 * var(--space)); }
-  .footer-meta { grid-column: 1; }
+  .footer {
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    column-gap: calc(var(--space) * .5);
+    row-gap: clamp(96px, 20svh, 240px);
+    min-height: 100svh;
+    padding: var(--space);
+    margin-left: 0;
+  }
+
+  .footer-logo {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    width: 40px;
+    height: 40px;
+  }
+
+  .footer-logo img {
+    height: 100%;
+    transform: translateX(-5px);
+    border-radius: 0;
+    mix-blend-mode: multiply;
+  }
+
+  .footer-client-line {
+    grid-column: 2;
+    grid-row: 1;
+    margin-right: -16px;
+  }
+
+  .footer-clients-label {
+    display: block;
+    font-size: var(--small);
+    line-height: 1.2;
+    opacity: .4;
+  }
+
+  .footer-clients {
+    font-size: var(--small);
+    line-height: 1.2;
+    letter-spacing: var(--letter-spacing);
+  }
+
+  .footer-meta {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    align-self: end;
+    margin-bottom: 0;
+  }
+
+  .footer-mobile-description {
+    display: block;
+    margin: 0;
+    font-size: clamp(28px, 8.2vw, 40px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: var(--letter-spacing-medium);
+  }
+
+  .footer-socials :deep(ul) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+  }
+
+  .footer-socials :deep(a) {
+    text-decoration: underline;
+    text-underline-offset: .2em;
+  }
+
+  .footer-description,
+  .copyright,
+  .footer-wordmark { display: none; }
 }
 </style>

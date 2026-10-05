@@ -46,20 +46,26 @@ const remainingContent = computed(() => {
   const content = project.value?.content || []
   return firstMediaIndex.value >= 0 ? content.slice(firstMediaIndex.value + 1) : content
 })
+const introductionParagraphs = computed(() => (project.value?.description || '')
+  .split(/\n\s*\n/)
+  .map(paragraph => paragraph.trim())
+  .filter(Boolean))
 if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case not found' })
 </script>
 
 <template>
   <PageFrame>
-    <main v-if="current" class="page">
-      <div v-if="leadContent.length" class="media-grid">
+    <main v-if="current" class="page case-page">
+      <div v-if="leadContent.length" class="media-grid lead-media">
         <CaseMediaBlock v-for="block in leadContent" :key="block._key" :block="block" />
       </div>
       <header class="case-head">
         <div class="case-identity">
           <h1>{{ current.title }}</h1>
         </div>
-        <p v-if="project?.description">{{ project.description }}</p>
+        <div v-if="introductionParagraphs.length" class="case-introduction">
+          <p v-for="(paragraph, index) in introductionParagraphs" :key="index">{{ paragraph }}</p>
+        </div>
       </header>
       <div v-if="remainingContent.length" class="media-grid">
         <CaseMediaBlock v-for="block in remainingContent" :key="block._key" :block="block" />
@@ -142,6 +148,8 @@ p {
   text-wrap: pretty;
 }
 
+.case-introduction p + p { margin-top: 1em; }
+
 .empty-media {
   min-height: 90vh;
   padding-inline: var(--space);
@@ -153,11 +161,38 @@ p {
 
 @media (max-width: 720px) {
   .case-head {
-    grid-template-columns: 1fr;
+    display: contents;
+  }
+
+  .case-identity {
+    order: -3;
+    min-height: clamp(280px, 80vw, 520px);
+    align-content: center;
+    padding: calc(var(--space) * 4) var(--space);
+    text-align: center;
+  }
+
+  .case-identity h1 {
+    font-size: clamp(28px, 8vw, 40px);
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .lead-media { order: -2; }
+
+  .case-introduction {
+    order: -1;
+    margin: calc(var(--space) * 3) var(--space);
+    opacity: var(--opacity-muted);
+  }
+
+  .case-page :deep(.text-block .copy) {
+    opacity: var(--opacity-muted);
   }
 
   .case-details {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
   }
 }
 </style>
