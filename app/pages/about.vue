@@ -3,7 +3,7 @@ import type { SiteSettings } from '~/types/sanity'
 
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
 if (settings.value?.disableAbout) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
-usePageSeo(() => settings.value?.aboutSeo, 'About — Yuliana', 'About our independent creative studio.')
+usePageSeo(() => settings.value?.aboutSeo, 'About — mmaze.studio', 'About our independent creative studio.')
 const headline = computed(() => settings.value?.aboutHeadline || 'About the studio.')
 const introduction = computed(() => settings.value?.aboutIntroduction ?? 'We’re a young team of talented people who make production a great process with a clear result. We ask a lot of questions, care about the small stuff and stay curious about pretty much everything. From straightforward productions to the slightly weird ones, we like figuring out how to make things work — and making them really good.')
 const processSteps = computed(() => settings.value?.aboutProcessSteps ?? ['Get the brief right', 'Get the right people', 'Map out the production', 'Polish before we share', 'Deliver what we promised'])

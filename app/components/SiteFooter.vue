@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<{
   mobileDescription?: string | null
   clients?: string[] | null
 }>(), {
-  wordmarkLabel: 'Yuliana',
+  wordmarkLabel: 'mmaze.studio',
   description: 'Independent creative studio'
 })
 

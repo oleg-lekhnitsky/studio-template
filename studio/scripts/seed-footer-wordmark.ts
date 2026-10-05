@@ -14,7 +14,7 @@ if (!settingsDocuments.length) throw new Error('Site settings document was not f
 let transaction = client.transaction()
 for (const settings of settingsDocuments) {
   if (!settings.footerWordmark?.trim()) {
-    transaction = transaction.patch(settings._id, patch => patch.set({ footerWordmark: 'Yuliana' }))
+    transaction = transaction.patch(settings._id, patch => patch.set({ footerWordmark: 'mmaze.studio' }))
   }
   if (!settings.footerDescription?.trim()) {
     transaction = transaction.patch(settings._id, patch => patch.set({ footerDescription: 'Independent creative studio' }))

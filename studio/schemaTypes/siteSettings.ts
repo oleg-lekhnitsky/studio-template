@@ -179,7 +179,7 @@ export default defineType({
       description: 'Large fitted name displayed at the bottom of the footer.',
       type: 'string',
       group: 'general',
-      initialValue: 'Yuliana',
+      initialValue: 'mmaze.studio',
       validation: rule => rule.max(60)
     }),
     defineField({

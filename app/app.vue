@@ -13,7 +13,7 @@ function syncShellToRoute() {
   isCasesIndex.value = routeIsCasesIndex()
 }
 
-const title = computed(() => siteSettings.value?.seoTitle || 'Yuliana — Selected Work')
+const title = computed(() => siteSettings.value?.seoTitle || 'mmaze.studio — Independent creative studio')
 const description = computed(() => siteSettings.value?.seoDescription || 'Independent creative studio portfolio.')
 const socialImage = computed(() => imageUrl(siteSettings.value?.ogImage, 1200) || undefined)
 const canonicalUrl = computed(() => new URL(route.path, runtimeConfig.public.siteUrl || requestUrl.origin).toString())
@@ -59,7 +59,7 @@ useHead({
     </div>
     <Transition name="page" mode="out-in">
       <SiteFooter v-if="!isCasesIndex" :key="route.fullPath" :social-links="siteSettings?.socialLinks"
-        :wordmark-label="siteSettings?.footerWordmark || 'Yuliana'"
+        :wordmark-label="siteSettings?.footerWordmark || 'mmaze.studio'" :description="siteSettings?.footerDescription || 'Independent creative studio'"
         :clients="siteSettings?.clients"
         :description="siteSettings?.footerDescription || 'Independent creative studio'"
         :mobile-description="siteSettings?.footerMobileDescription" />

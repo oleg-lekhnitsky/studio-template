@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', closeOnEscape)
   window.removeEventListener('scroll', updateToolbarVisibility)
 })
-usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projects from our creative studio.')
+usePageSeo(() => settings.value?.casesSeo, 'Cases — mmaze.studio', 'Selected projects from our creative studio.')
 </script>
 
 <template>
