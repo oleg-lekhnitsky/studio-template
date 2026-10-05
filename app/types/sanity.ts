@@ -19,15 +19,28 @@ export interface CasePreview {
   coverPoster?: SanityImage
 }
 
-export type CaseBlock =
-  | { _key: string; _type: 'galleryImage'; image: SanityImage; width?: 'half' | 'full' }
+export type CaseMediaTile =
+  | { _key: string; _type: 'galleryImage'; image: SanityImage; width?: 'half' | 'full'; aspectRatio?: 'original' | '16:9' | '4:3' | '1:1' | '4:5' | '9:16' }
   | { _key: string; _type: 'video'; url?: string; fileUrl?: string; poster?: SanityImage; width?: 'half' | 'full'; aspectRatio?: '16:9' | '4:3' | '1:1' | '4:5' | '9:16' }
+
+export interface CaseBento {
+  _key: string
+  _type: 'bento'
+  width?: 'full'
+  layout?: 'halves' | 'stack-left' | 'stack-right' | 'quarters' | 'thirds' | 'large-left' | 'large-right' | 'large-left-split-right'
+  aspectRatio?: '16:9' | '4:3' | '1:1' | '4:5'
+  tiles?: CaseMediaTile[]
+}
+
+export type CaseBlock =
+  | CaseMediaTile
+  | CaseBento
   | { _key: string; _type: 'textBlock'; label?: string; text?: TypedObject[]; width?: 'half' | 'full' }
 
 export interface CaseStudy extends CasePreview {
   description?: string
   content?: CaseBlock[]
-  cast?: Array<{ _key: string; role: string; name: string }>
+  cast?: Array<{ _key: string; role: string; name: string; url?: string }>
 }
 
 export interface PageSeo {
@@ -64,6 +77,7 @@ export interface SiteSettings {
   disableContact?: boolean
   footerWordmark?: string
   footerDescription?: string
+  clients?: string[] | null
   headerText?: string
   headerLogoSvgUrl?: string
   headerLogoColorMode?: 'theme' | 'original'
@@ -80,9 +94,14 @@ export interface SiteSettings {
   jobFormFields?: FormField[]
   socialLinks?: SocialLink[]
   heroHeadline?: string
+  heroSubheading?: string
   heroVideoUrl?: string
   heroPoster?: SanityImage
   aboutHeadline?: string
+  aboutIntroduction?: string | null
+  aboutProcessTitle?: string
+  aboutProcessSteps?: string[] | null
+  aboutServices?: string[] | null
   aboutVideoUrl?: string
   aboutImage?: SanityImage
   people?: Person[]

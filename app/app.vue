@@ -60,6 +60,7 @@ useHead({
     <Transition name="page" mode="out-in">
       <SiteFooter v-if="!isCasesIndex" :key="route.fullPath" :social-links="siteSettings?.socialLinks"
         :wordmark-label="siteSettings?.footerWordmark || 'Yuliana'"
+        :clients="siteSettings?.clients"
         :description="siteSettings?.footerDescription || 'Independent creative studio'" />
     </Transition>
   </div>

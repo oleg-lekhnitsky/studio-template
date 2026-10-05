@@ -59,6 +59,7 @@ onBeforeUnmount(() => {
   <header class="header">
     <NuxtLink class="header-identity-link" to="/" :aria-label="`${settings?.headerText || 'Studio'} home`">
       <HeaderIdentity
+        image-url="/icon.gif"
         :text="settings?.headerText || 'Studio'"
         :svg-url="settings?.headerLogoSvgUrl"
         :svg-color-mode="settings?.headerLogoColorMode || 'theme'"
@@ -106,6 +107,8 @@ onBeforeUnmount(() => {
   display: block;
   width: fit-content;
   max-width: 100%;
+  margin-top: calc(-1 * var(--space));
+  margin-left: calc(-1 * var(--space));
 }
 
 .header > a:focus-visible {
@@ -132,6 +135,10 @@ onBeforeUnmount(() => {
   .header-navigation {
     position: static;
     width: auto;
+  }
+
+  .header-identity-link {
+    margin-top: calc(-0.5 * var(--space));
   }
 
 }

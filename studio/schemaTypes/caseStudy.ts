@@ -25,7 +25,14 @@ export default defineType({
         type: 'object',
         fields: [
           defineField({ name: 'role', type: 'string', validation: rule => rule.required() }),
-          defineField({ name: 'name', type: 'string', validation: rule => rule.required() })
+          defineField({ name: 'name', type: 'string', validation: rule => rule.required() }),
+          defineField({
+            name: 'url',
+            title: 'Name link',
+            description: 'Optional link to this person’s website or profile.',
+            type: 'url',
+            validation: rule => rule.uri({ scheme: ['http', 'https'] })
+          })
         ],
         preview: { select: { title: 'role', subtitle: 'name' } }
       }]
@@ -67,7 +74,7 @@ export default defineType({
       name: 'content',
       title: 'Page content',
       type: 'array',
-      of: [{ type: 'galleryImage' }, { type: 'video' }, { type: 'textBlock' }]
+      of: [{ type: 'galleryImage' }, { type: 'video' }, { type: 'textBlock' }, { type: 'bento' }]
     })
   ],
   preview: { select: { title: 'title', subtitle: 'year', media: 'cover' } }

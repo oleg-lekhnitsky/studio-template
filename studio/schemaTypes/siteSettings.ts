@@ -192,6 +192,15 @@ export default defineType({
       validation: rule => rule.max(120)
     }),
     defineField({
+      name: 'clients',
+      title: 'Clients',
+      description: 'Client names in the scrolling line at the top of the footer. Drag to reorder; remove all names to hide the line.',
+      type: 'array',
+      of: [{ type: 'string', validation: rule => rule.required() }],
+      group: 'general',
+      initialValue: ['FinteqHub', 'Softswiss', 'Burger King', 'GYPSY', 'Infingame', 'Clevetura', 'Boomerang', 'LVLX', 'InOut', 'Scatters Club', 'TrueWays']
+    }),
+    defineField({
       name: 'seoDescription',
       title: 'Website description',
       type: 'text',
@@ -272,6 +281,13 @@ export default defineType({
       initialValue: 'Ideas, identities\nand digital experiences.'
     }),
     defineField({
+      name: 'heroSubheading',
+      title: 'Hero subheading',
+      type: 'text',
+      group: 'home',
+      rows: 3
+    }),
+    defineField({
       name: 'heroVideo',
       title: 'Hero video',
       description: 'Use a compressed MP4 or WebM without an audio track when possible. Keep it short for fast loading.',
@@ -295,6 +311,39 @@ export default defineType({
       group: 'about',
       rows: 3,
       initialValue: 'About the studio.'
+    }),
+    defineField({
+      name: 'aboutIntroduction',
+      title: 'Studio introduction',
+      type: 'text',
+      group: 'about',
+      rows: 5,
+      initialValue: 'We’re a young team of talented people who make production a great process with a clear result. We ask a lot of questions, care about the small stuff and stay curious about pretty much everything. From straightforward productions to the slightly weird ones, we like figuring out how to make things work — and making them really good.'
+    }),
+    defineField({
+      name: 'aboutProcessTitle',
+      title: 'Process heading',
+      type: 'string',
+      group: 'about',
+      initialValue: 'The Mmaze 5'
+    }),
+    defineField({
+      name: 'aboutProcessSteps',
+      title: 'Process steps',
+      description: 'Add steps in order. Numbers and arrows appear automatically. Remove all steps to hide this section.',
+      type: 'array',
+      of: [{ type: 'string', validation: rule => rule.required() }],
+      group: 'about',
+      initialValue: ['Get the brief right', 'Get the right people', 'Map out the production', 'Polish before we share', 'Deliver what we promised']
+    }),
+    defineField({
+      name: 'aboutServices',
+      title: 'Services',
+      description: 'Add and reorder service names. Remove all services to hide this section.',
+      type: 'array',
+      of: [{ type: 'string', validation: rule => rule.required() }],
+      group: 'about',
+      initialValue: ['Video Production', 'Animation', 'Creative Concepts', 'AI-production', 'Design & Brand Identity', '3D & VFX', 'Remote Production']
     }),
     defineField({
       name: 'aboutVideo',

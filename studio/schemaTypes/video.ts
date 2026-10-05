@@ -22,7 +22,7 @@ export default defineType({
       name: 'aspectRatio',
       title: 'Aspect ratio',
       type: 'string',
-      description: 'Choose the shape of the Vimeo player.',
+      description: 'Choose the inline video shape. Uploaded videos are cropped to fill it. Bento layouts control tile shape on desktop.',
       options: {
         list: [
           { title: 'Landscape 16:9', value: '16:9' },

@@ -18,7 +18,10 @@ export const caseQuery = groq`*[_type == "case" && slug.current == $slug][0] {
   "coverVideoUrl": coverVideo.asset->url, coverPoster,
   content[]{
     ...,
-    _type == "video" => { ..., "fileUrl": file.asset->url }
+    _type == "video" => { ..., "fileUrl": file.asset->url },
+    _type == "bento" => {
+      tiles[]{ ..., _type == "video" => { ..., "fileUrl": file.asset->url } }
+    }
   }
 }`
 
@@ -29,6 +32,7 @@ export const siteSettingsQuery = groq`*[_type == "siteSettings" && _id == "${sit
   disableContact,
   footerWordmark,
   footerDescription,
+  clients,
   headerText,
   "headerLogoSvgUrl": headerLogoSvg.asset->url,
   headerLogoColorMode,
@@ -45,9 +49,14 @@ export const siteSettingsQuery = groq`*[_type == "siteSettings" && _id == "${sit
   jobFormFields[]{ _key, label, type, placeholder, required },
   socialLinks[]{ _key, label, url },
   heroHeadline,
+  heroSubheading,
   "heroVideoUrl": heroVideo.asset->url,
   heroPoster,
   aboutHeadline,
+  aboutIntroduction,
+  aboutProcessTitle,
+  aboutProcessSteps,
+  aboutServices,
   "aboutVideoUrl": aboutVideo.asset->url,
   aboutImage,
   people[]{ _key, name, position, image },

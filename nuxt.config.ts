@@ -62,6 +62,8 @@ export default defineNuxtConfig({
     },
     head: {
       link: [
+        { rel: 'preconnect', href: 'https://rsms.me/' },
+        { rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css' },
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
       ]
     }

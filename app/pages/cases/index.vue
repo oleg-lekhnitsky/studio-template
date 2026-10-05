@@ -207,6 +207,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
   display: grid;
   grid-template-columns: repeat(var(--masonry-columns), minmax(0, 1fr));
   gap: var(--space);
+  
 }
 
 .masonry-column {
@@ -222,7 +223,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — Yuliana', 'Selected projec
 
 .masonry :deep(.card) {
   width: 100%;
-  margin-bottom: calc(var(--space) * 2);
+  margin-bottom: calc(var(--space) * 1.5);
   opacity: 1;
   transform: translateY(0);
   transition:

@@ -36,7 +36,7 @@ useHead({
   }]
 })
 const firstMediaIndex = computed(() => project.value?.content?.findIndex(block =>
-  block._type === 'galleryImage' || block._type === 'video'
+  block._type === 'galleryImage' || block._type === 'video' || block._type === 'bento'
 ) ?? -1)
 const leadContent = computed(() => {
   const content = project.value?.content || []
@@ -70,9 +70,16 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
           <dt>Year</dt>
           <dd>{{ current.year }}</dd>
         </template>
-        <template v-for="credit in project?.cast || []" :key="credit._key">
-          <dt>{{ credit.role }}</dt>
-          <dd>{{ credit.name }}</dd>
+        <template v-if="project?.cast?.length">
+          <dt>Team</dt>
+          <dd class="team-credits">
+            <template v-for="credit in project.cast" :key="credit._key">
+              <span>{{ credit.role }}:
+                <a v-if="credit.url" class="credit-name" :href="credit.url">{{ credit.name }}</a>
+                <span v-else class="credit-name">{{ credit.name }}</span>
+              </span>{{ ' ' }}
+            </template>
+          </dd>
         </template>
       </dl>
       <NextCases :current-id="current._id" />
@@ -85,11 +92,15 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space);
-  margin-bottom: calc(var(--space) * 1);
-  padding: var(--space);
+  margin: 0;
+  padding: calc(var(--space) * 2) var(--space);
 }
 
-.case-identity { display: grid; align-content: start; }
+.case-identity {
+  display: grid;
+  align-content: start;
+  
+}
 
 .case-details {
   display: grid;
@@ -98,18 +109,37 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
   margin: calc(var(--space) * 3) 0 0;
   padding: var(--space);
 }
+
 .case-details dt,
-.case-details dd { margin: 0; }
+.case-details dd {
+  margin: 0;
+}
+
+.case-details {
+  padding-block: calc(var(--space) * 4);
+}
+
+.team-credits {
+  line-height: 1.3;
+}
+
+.credit-name {
+  color: var(--accent);
+}
 
 h1 {
   margin: 0;
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit;
+  font-size: var(--medium);
+  line-height: 1.1;
+  text-wrap: pretty;
 }
 
 p {
   margin: 0;
+  text-wrap: pretty;
 }
 
 .empty-media {
@@ -122,7 +152,12 @@ p {
 }
 
 @media (max-width: 720px) {
-  .case-head { grid-template-columns: 1fr; }
-  .case-details { grid-template-columns: 1fr; }
+  .case-head {
+    grid-template-columns: 1fr;
+  }
+
+  .case-details {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

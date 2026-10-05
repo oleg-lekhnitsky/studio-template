@@ -39,16 +39,25 @@ const isSanityPresentation = useIsSanityPresentationTool()
 const isMobile = ref(false)
 const isSafari = ref(false)
 const isOpen = ref(false)
+const hasOpened = ref(false)
+const usesSourceMedia = ref(false)
 const isExpanded = ref(false)
+const isClosing = ref(false)
 const suppressTriggerRing = ref(false)
 const source = ref<HTMLElement>()
 const trigger = ref<HTMLButtonElement>()
 const closeButton = ref<HTMLButtonElement>()
 const dialog = ref<HTMLElement>()
+const reusedMediaHost = ref<HTMLElement>()
 const frame = ref({ top: 0, left: 0, width: 0, height: 0 })
 const safariTransform = ref({ x: 0, y: 0, scaleX: 1, scaleY: 1 })
 let sourceVideo: HTMLVideoElement | null = null
 let fullscreenVideo: HTMLVideoElement | null = null
+let reusedMedia: HTMLImageElement | HTMLVideoElement | null = null
+let originalMediaParent: HTMLElement | null = null
+let originalMediaNextSibling: ChildNode | null = null
+let originalSourceHeight = ''
+let originalVideoControls = false
 let entry: FullscreenEntry
 let mobileQuery: MediaQueryList | undefined
 
@@ -106,8 +115,8 @@ function setSafariSourceTransform() {
 }
 
 async function open() {
-  sourceVideo = source.value?.querySelector('video') || null
-  sourceVideo?.pause()
+  if (isOpen.value || isClosing.value) return
+  prepareMedia()
   lockPage()
 
   if (isSafari.value) {
@@ -116,8 +125,7 @@ async function open() {
     isExpanded.value = false
     isOpen.value = true
     await nextTick()
-    fullscreenVideo = dialog.value?.querySelector('video') || null
-    fullscreenVideo?.play().catch(() => {})
+    activateMedia()
     closeButton.value?.focus()
     requestAnimationFrame(() => { isExpanded.value = true })
     return
@@ -126,8 +134,7 @@ async function open() {
   setSourceFrame()
   isOpen.value = true
   await nextTick()
-  fullscreenVideo = dialog.value?.querySelector('video') || null
-  fullscreenVideo?.play().catch(() => {})
+  activateMedia()
   closeButton.value?.focus()
   requestAnimationFrame(() => {
     setFullscreenFrame()
@@ -136,19 +143,22 @@ async function open() {
 }
 
 async function close() {
-  if (!isOpen.value) return
+  if (!isOpen.value || isClosing.value) return
+  isClosing.value = true
 
   if (isSafari.value) {
     fullscreenVideo?.pause()
     setSafariSourceTransform()
     isExpanded.value = false
     await new Promise(resolve => window.setTimeout(resolve, motionDuration()))
+    restoreMedia()
     isOpen.value = false
     unlockPage()
     sourceVideo?.play().catch(() => {})
     suppressTriggerRing.value = true
     await nextTick()
     trigger.value?.focus({ preventScroll: true })
+    isClosing.value = false
     return
   }
 
@@ -156,11 +166,50 @@ async function close() {
   fullscreenVideo?.pause()
   setSourceFrame()
   await new Promise(resolve => window.setTimeout(resolve, motionDuration()))
+  restoreMedia()
   isOpen.value = false
   unlockPage()
   sourceVideo?.play().catch(() => {})
   suppressTriggerRing.value = true
   nextTick(() => trigger.value?.focus({ preventScroll: true }))
+  isClosing.value = false
+}
+
+function prepareMedia() {
+  sourceVideo = source.value?.querySelector('video') || null
+  reusedMedia = sourceVideo || source.value?.querySelector('img') || null
+  usesSourceMedia.value = !!reusedMedia
+  hasOpened.value = true
+  if (!reusedMedia) sourceVideo?.pause()
+}
+
+function activateMedia() {
+  if (reusedMedia && reusedMediaHost.value && source.value) {
+    originalMediaParent = reusedMedia.parentElement
+    originalMediaNextSibling = reusedMedia.nextSibling
+    originalSourceHeight = source.value.style.height
+    source.value.style.height = `${source.value.getBoundingClientRect().height}px`
+    if (reusedMedia instanceof HTMLVideoElement) {
+      originalVideoControls = reusedMedia.controls
+      reusedMedia.controls = true
+    }
+    reusedMediaHost.value.appendChild(reusedMedia)
+  }
+  fullscreenVideo = dialog.value?.querySelector('video') || null
+  fullscreenVideo?.play().catch(() => {})
+}
+
+function restoreMedia() {
+  if (reusedMedia && originalMediaParent) {
+    originalMediaParent.insertBefore(reusedMedia,
+      originalMediaNextSibling?.parentNode === originalMediaParent ? originalMediaNextSibling : null)
+    if (reusedMedia instanceof HTMLVideoElement) reusedMedia.controls = originalVideoControls
+    if (source.value) source.value.style.height = originalSourceHeight
+  }
+  reusedMedia = null
+  originalMediaParent = null
+  originalMediaNextSibling = null
+  fullscreenVideo = null
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -179,22 +228,25 @@ function handleKeydown(event: KeyboardEvent) {
 }
 
 function closeForHandoff() {
+  fullscreenVideo?.pause()
+  restoreMedia()
   isExpanded.value = false
   isOpen.value = false
   sourceVideo?.play().catch(() => {})
 }
 
 async function openFromHandoff() {
-  sourceVideo = source.value?.querySelector('video') || null
-  sourceVideo?.pause()
+  prepareMedia()
   setFullscreenFrame()
   isOpen.value = true
   isExpanded.value = true
   await nextTick()
+  activateMedia()
   closeButton.value?.focus()
 }
 
 function navigate(direction: -1 | 1) {
+  if (isClosing.value) return
   if (fullscreenEntries.length < 2) return
   const currentIndex = fullscreenEntries.indexOf(entry)
   if (currentIndex < 0) return
@@ -205,6 +257,7 @@ function navigate(direction: -1 | 1) {
 }
 
 onMounted(() => {
+  if (props.preloadFullscreen && !source.value?.querySelector('img, video')) hasOpened.value = true
   isSafari.value = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
   mobileQuery = window.matchMedia('(max-width: 720px)')
   syncMobile(mobileQuery)
@@ -214,6 +267,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  fullscreenVideo?.pause()
+  restoreMedia()
   mobileQuery?.removeEventListener('change', syncMobile)
   const index = fullscreenEntries.indexOf(entry)
   if (index >= 0) fullscreenEntries.splice(index, 1)
@@ -230,7 +285,7 @@ onBeforeUnmount(() => {
     </div>
 
     <Teleport to="body">
-      <div v-if="isOpen || props.preloadFullscreen" v-show="isOpen" ref="dialog" class="fullscreen-dialog"
+      <div v-if="isOpen || hasOpened" v-show="isOpen" ref="dialog" class="fullscreen-dialog"
         :class="{ 'is-expanded': isExpanded, 'is-safari': isSafari }"
         role="dialog" aria-modal="true"
         :aria-label="props.label" @click.self="close" @keydown="handleKeydown">
@@ -245,7 +300,8 @@ onBeforeUnmount(() => {
         <button v-if="fullscreenEntries.length > 1" class="nav-button next" type="button"
           aria-label="Next media" @click="navigate(1)">→</button>
         <div class="fullscreen-content" :style="frameStyle">
-          <slot name="fullscreen" />
+          <div v-if="usesSourceMedia" ref="reusedMediaHost" class="fullscreen-reused" />
+          <slot v-else name="fullscreen" />
         </div>
       </div>
     </Teleport>
@@ -391,7 +447,7 @@ Safari cannot lose them while resolving the teleported slot tree. -->
   max-height: none !important;
   margin: 0 !important;
   border-radius: 0 !important;
-  object-fit: contain;
+  object-fit: contain !important;
 }
 
 .fullscreen-dialog .fullscreen-content img,
@@ -405,6 +461,6 @@ Safari cannot lose them while resolving the teleported slot tree. -->
   max-height: none !important;
   margin: 0 !important;
   border-radius: 0 !important;
-  object-fit: contain;
+  object-fit: contain !important;
 }
 </style>

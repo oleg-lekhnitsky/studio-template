@@ -4,12 +4,14 @@ import type { SanityImage } from '~/types/sanity'
 
 const props = withDefaults(defineProps<{
   headline: string
+  subheading?: string
   videoUrl?: string
   image?: SanityImage
   poster?: SanityImage
   placeholder?: boolean
+  showHeadings?: boolean
   sanityPath?: string
-}>(), { placeholder: false })
+}>(), { placeholder: false, showHeadings: true })
 
 const imageUrl = useSanityImage()
 const runtimeConfig = useRuntimeConfig()
@@ -42,7 +44,10 @@ const mediaDataSanity = computed(() => props.sanityPath
       sizes="sm:100vw md:100vw lg:100vw xl:100vw 2xl:100vw"
       :modifiers="{ crop: image.crop, hotspot: image.hotspot }" />
     <div v-else-if="placeholder" class="hero-media hero-placeholder" aria-hidden="true" />
-    <h1 class="display">{{ cleanHeadline }}</h1>
+    <div v-if="showHeadings" class="hero-headings">
+      <h1>{{ cleanHeadline }}</h1>
+      <p v-if="subheading?.trim()">{{ subheading }}</p>
+    </div>
   </section>
 </template>
 
@@ -50,6 +55,8 @@ const mediaDataSanity = computed(() => props.sanityPath
 .hero {
   display: flex;
   flex-direction: column;
+  gap: calc(var(--space) * 4);
+  margin-bottom: calc(var(--space) * 3);
 }
 
 .hero-media {
@@ -92,10 +99,42 @@ const mediaDataSanity = computed(() => props.sanityPath
   border-radius: var(--radius);
 }
 
-h1 {
-  margin: 0;
+.hero-headings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space);
+  align-items: start;
   padding: var(--space);
-  font-weight: inherit;
+}
+
+h1{
+  font-weight: 600;
+}
+
+h1,
+p {
+  margin: 0;
   white-space: pre-line;
+  text-wrap: pretty;
+}
+
+h1 {
+  font-size: var(--medium);
+  font-weight: 600;
+  line-height: 1.1;
+  
+}
+
+p {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
+  
+}
+
+@media (max-width: 720px) {
+  .hero-headings {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

@@ -10,7 +10,7 @@ const headline = computed(() => settings.value?.heroHeadline || 'Ideas, identiti
 <template>
   <PageFrame>
     <main class="page">
-      <HeroSection :headline="headline" :video-url="settings?.heroVideoUrl" :poster="settings?.heroPoster"
+      <HeroSection :headline="headline" :subheading="settings?.heroSubheading" :video-url="settings?.heroVideoUrl" :poster="settings?.heroPoster"
         sanity-path="heroVideo" />
       <section v-if="!settings?.disableCases" class="home-grid">
         <PreviewCard v-for="(item, index) in items" :key="item._id" :item="item" :index="index" />
@@ -33,7 +33,10 @@ const headline = computed(() => settings.value?.heroHeadline || 'Ideas, identiti
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
-  margin-bottom: calc(var(--space) * 2);
+  margin-bottom: calc(var(--space) * 1.5);
+    display: flex;
+  flex-direction: column;
+  gap: calc(var(--space) * .5);
 }
 
 .show-all {
