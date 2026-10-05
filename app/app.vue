@@ -59,7 +59,7 @@ useHead({
     </div>
     <Transition name="page" mode="out-in">
       <SiteFooter v-if="!isCasesIndex" :key="route.fullPath" :social-links="siteSettings?.socialLinks"
-        :wordmark-label="siteSettings?.footerWordmark || 'mmaze.studio'" :description="siteSettings?.footerDescription || 'Independent creative studio'"
+        :wordmark-label="siteSettings?.footerWordmark || 'mmaze.studio'"
         :clients="siteSettings?.clients"
         :description="siteSettings?.footerDescription || 'Independent creative studio'"
         :mobile-description="siteSettings?.footerMobileDescription" />
