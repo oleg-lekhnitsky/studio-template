@@ -8,7 +8,7 @@ const posterUrl = useSanityImage()
 
 <template>
   <NuxtLink class="card" :to="`/cases/${item.slug}`">
-    <div class="visual" :style="{ background: fallback }">
+    <div class="visual" :style="{ background: !item.coverVideoUrl && !item.cover?.asset?._ref ? fallback : undefined }">
       <AutoplayVideo v-if="item.coverVideoUrl" :src="item.coverVideoUrl"
         :poster="posterUrl(item.coverPoster || item.cover, 1600)" />
       <NuxtImg v-else-if="item.cover?.asset?._ref" provider="sanity" :src="item.cover.asset._ref"
@@ -37,7 +37,6 @@ const posterUrl = useSanityImage()
 .visual {
   overflow: hidden;
   border-radius: var(--radius);
-  clip-path: inset(0 round var(--radius));
 }
 
 .visual:has(.placeholder) {
@@ -45,8 +44,9 @@ const posterUrl = useSanityImage()
 }
 
 .visual :deep(img),
-.visual video {
+.visual :deep(video) {
   height: auto;
+  border-radius: 0;
   transition: transform .35s;
 }
 
@@ -55,7 +55,7 @@ const posterUrl = useSanityImage()
 }
 
 .card:hover :deep(img),
-.card:hover video {
+.card:hover :deep(video) {
   transform: scale(1.015);
 }
 
