@@ -80,6 +80,10 @@ const posterUrl = useSanityImage()
   line-height: 1.3;
 }
 
+.details > span {
+  text-wrap: pretty;
+}
+
 .description {
   opacity: var(--opacity-secondary);
 }

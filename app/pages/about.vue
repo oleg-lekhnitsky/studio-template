@@ -46,7 +46,7 @@ const services = computed(() => settings.value?.aboutServices ?? ['Video Product
 
 .about-introduction {
   margin: calc(var(--space) * 4) var(--space) 0;
-  font-size: var(--small);
+  font-size: var(--medium);
   font-weight: 600;
   line-height: 1.25;
   white-space: pre-line;

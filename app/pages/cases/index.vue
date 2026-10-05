@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CasePreview, SiteSettings } from '~/types/sanity'
+import { balanceMasonry } from '~/utils/balanceMasonry'
 
 const { data } = await useSanityQuery<CasePreview[]>(casesQuery)
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
@@ -11,6 +12,11 @@ const displayedCategory = ref('All')
 const cardsVisible = ref(true)
 const toolbarVisible = ref(true)
 const masonryColumnCount = ref(4)
+const masonry = ref<HTMLElement | null>(null)
+const columnWidth = ref(300)
+const cardSpace = ref(12)
+const captionFontSize = ref(16)
+const captionLineHeight = ref(20.8)
 let filterSequence = 0
 let lastScrollY = 0
 let scrollFrame = 0
@@ -22,14 +28,34 @@ const filteredItems = computed(() => displayedCategory.value === 'All'
   ? items.value
   : items.value.filter(item => item.categories?.includes(displayedCategory.value)))
 const masonryColumns = computed(() => {
-  const columns = Array.from({ length: masonryColumnCount.value }, () => [] as Array<{ item: CasePreview; index: number }>)
-  filteredItems.value.forEach((item, index) => columns[index % masonryColumnCount.value]?.push({ item, index }))
-  return columns
+  const entries = filteredItems.value.map((item, index) => ({ item, index }))
+  return balanceMasonry(entries, masonryColumnCount.value, ({ item }) => {
+    const cover = item.coverVideoUrl ? item.coverPoster || item.cover : item.cover
+    const dimensions = sanityImageDimensions(cover?.asset?._ref)
+    const mediaHeight = cover?.asset?._ref
+      ? columnWidth.value * dimensions.height / dimensions.width
+      : columnWidth.value * 3 / 4
+    const charactersPerLine = Math.max(1, columnWidth.value / (captionFontSize.value * .5))
+    const titleLines = Math.ceil(item.title.length / charactersPerLine)
+    const summaryLines = item.summary ? Math.ceil(item.summary.length / charactersPerLine) : 0
+    return mediaHeight + (titleLines + summaryLines) * captionLineHeight.value + 9 + cardSpace.value * 1.75
+  })
 })
 
 function syncMasonryColumns() {
   const width = window.innerWidth
   masonryColumnCount.value = width <= 520 ? 1 : width <= 800 ? 2 : width <= 1100 ? 3 : 4
+  if (masonry.value) {
+    const style = getComputedStyle(masonry.value)
+    cardSpace.value = Number.parseFloat(style.columnGap) || 12
+    columnWidth.value = Math.max(1, (masonry.value.clientWidth - cardSpace.value * (masonryColumnCount.value - 1)) / masonryColumnCount.value)
+    const caption = masonry.value.querySelector<HTMLElement>('.details')
+    if (caption) {
+      const captionStyle = getComputedStyle(caption)
+      captionFontSize.value = Number.parseFloat(captionStyle.fontSize) || 16
+      captionLineHeight.value = Number.parseFloat(captionStyle.lineHeight) || captionFontSize.value * 1.3
+    }
+  }
 }
 
 async function selectCategory(category: string) {
@@ -112,7 +138,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Cases — mmaze.studio', 'Selected p
           </svg>
         </button>
       </header>
-      <section class="masonry" :class="{ 'cards-hidden': !cardsVisible }"
+      <section ref="masonry" class="masonry" :class="{ 'cards-hidden': !cardsVisible }"
         :style="{ '--masonry-columns': masonryColumnCount }">
         <div v-for="(column, columnIndex) in masonryColumns" :key="columnIndex" class="masonry-column">
           <PreviewCard v-for="entry in column" :key="entry.item._id" :item="entry.item" :index="entry.index"
