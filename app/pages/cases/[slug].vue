@@ -54,10 +54,15 @@ const introductionParagraphs = computed(() => (project.value?.description || '')
 const creditGroups = computed(() => {
   const groups = new Map<string, { role: string; people: NonNullable<CaseStudy['cast']> }>()
   for (const credit of project.value?.cast || []) {
+    const people = [
+      ...(credit.name ? [{ _key: credit._key, role: credit.role, name: credit.name, url: credit.url }] : []),
+      ...(credit.people || []).map(person => ({ ...person, _key: `${credit._key}-${person._key}`, role: credit.role }))
+    ]
+    if (!people.length) continue
     const key = stegaClean(credit.role).trim().toLowerCase()
     const group = groups.get(key)
-    if (group) group.people.push(credit)
-    else groups.set(key, { role: credit.role, people: [credit] })
+    if (group) group.people.push(...people)
+    else groups.set(key, { role: credit.role, people })
   }
   return [...groups.values()]
 })

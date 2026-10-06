@@ -19,22 +19,60 @@ export default defineType({
     defineField({
       name: 'cast',
       title: 'Cast / Credits',
-      description: 'Add one entry per person, with their own link. Use the same role for people credited together, such as two designers.',
+      description: 'Add a role, then add each person with their own name and link.',
       type: 'array',
       of: [{
         type: 'object',
         fields: [
           defineField({ name: 'role', type: 'string', validation: rule => rule.required() }),
-          defineField({ name: 'name', type: 'string', validation: rule => rule.required() }),
+          defineField({
+            name: 'people',
+            title: 'People',
+            type: 'array',
+            of: [{
+              type: 'object',
+              name: 'creditPerson',
+              title: 'Person',
+              fields: [
+                defineField({ name: 'name', type: 'string', validation: rule => rule.required() }),
+                defineField({
+                  name: 'url',
+                  title: 'Name link',
+                  description: 'Optional link to this person’s website or profile.',
+                  type: 'url',
+                  validation: rule => rule.uri({ scheme: ['http', 'https'] })
+                })
+              ],
+              preview: { select: { title: 'name', subtitle: 'url' } }
+            }],
+            validation: rule => rule.custom((people, context) =>
+              (people?.length || (context.parent as { name?: string } | undefined)?.name)
+                ? true : 'Add at least one person.'
+            )
+          }),
+          defineField({
+            name: 'name',
+            title: 'Existing name',
+            description: 'For separate links, add each person to People and clear this field.',
+            type: 'string',
+            hidden: ({ parent }) => !parent?.name
+          }),
           defineField({
             name: 'url',
+            hidden: ({ parent }) => !parent?.name && !parent?.url,
             title: 'Name link',
             description: 'Optional link to this person’s website or profile.',
             type: 'url',
             validation: rule => rule.uri({ scheme: ['http', 'https'] })
           })
         ],
-        preview: { select: { title: 'role', subtitle: 'name' } }
+        preview: {
+          select: { title: 'role', name: 'name', people: 'people' },
+          prepare: ({ title, name, people }) => ({
+            title,
+            subtitle: [name, ...(people || []).map((person: { name?: string }) => person.name)].filter(Boolean).join(', ')
+          })
+        }
       }]
     }),
     defineField({

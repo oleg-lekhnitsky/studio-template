@@ -40,7 +40,13 @@ export type CaseBlock =
 export interface CaseStudy extends CasePreview {
   description?: string
   content?: CaseBlock[]
-  cast?: Array<{ _key: string; role: string; name: string; url?: string }>
+  cast?: Array<{
+    _key: string
+    role: string
+    name?: string
+    url?: string
+    people?: Array<{ _key: string; name: string; url?: string }>
+  }>
 }
 
 export interface PageSeo {
