@@ -19,7 +19,7 @@ export default defineType({
     defineField({
       name: 'cast',
       title: 'Cast / Credits',
-      description: 'People and roles shown at the end of the case.',
+      description: 'Add one entry per person, with their own link. Use the same role for people credited together, such as two designers.',
       type: 'array',
       of: [{
         type: 'object',

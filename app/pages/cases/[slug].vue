@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { stegaClean } from '@sanity/client/stega'
 import type { CaseStudy, SiteSettings } from '~/types/sanity'
 
 const route = useRoute()
@@ -50,6 +51,16 @@ const introductionParagraphs = computed(() => (project.value?.description || '')
   .split(/\n\s*\n/)
   .map(paragraph => paragraph.trim())
   .filter(Boolean))
+const creditGroups = computed(() => {
+  const groups = new Map<string, { role: string; people: NonNullable<CaseStudy['cast']> }>()
+  for (const credit of project.value?.cast || []) {
+    const key = stegaClean(credit.role).trim().toLowerCase()
+    const group = groups.get(key)
+    if (group) group.people.push(credit)
+    else groups.set(key, { role: credit.role, people: [credit] })
+  }
+  return [...groups.values()]
+})
 if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case not found' })
 </script>
 
@@ -79,10 +90,13 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
         <template v-if="project?.cast?.length">
           <dt>Team</dt>
           <dd class="team-credits">
-            <template v-for="credit in project.cast" :key="credit._key">
-              <span>{{ credit.role }}:
-                <a v-if="credit.url" class="credit-name" :href="credit.url">{{ credit.name }}</a>
-                <span v-else class="credit-name">{{ credit.name }}</span>
+            <template v-for="group in creditGroups" :key="group.people[0]._key">
+              <span>{{ group.role }}:
+                <template v-for="(credit, index) in group.people" :key="credit._key">
+                  <template v-if="index">{{ ', ' }}</template>
+                  <a v-if="credit.url" class="credit-name" :href="credit.url">{{ credit.name }}</a>
+                  <span v-else class="credit-name">{{ credit.name }}</span>
+                </template>
               </span>{{ ' ' }}
             </template>
           </dd>
