@@ -7,6 +7,7 @@ const layouts = {
   halves: { columns: 2, areas: ['1 / 1 / 3 / 2', '1 / 2 / 3 / 3'] },
   'stack-left': { columns: 2, areas: ['1 / 1 / 2 / 2', '2 / 1 / 3 / 2', '1 / 2 / 3 / 3'] },
   'stack-right': { columns: 2, areas: ['1 / 1 / 3 / 2', '1 / 2 / 2 / 3', '2 / 2 / 3 / 3'] },
+  'stack-right-75-25': { columns: 2, areas: ['1 / 1 / 3 / 2', '1 / 2 / 2 / 3', '2 / 2 / 3 / 3'] },
   quarters: { columns: 2, areas: ['1 / 1 / 2 / 2', '2 / 1 / 3 / 2', '1 / 2 / 2 / 3', '2 / 2 / 3 / 3'] },
   thirds: { columns: 3, areas: ['1 / 1 / 3 / 2', '1 / 2 / 3 / 3', '1 / 3 / 3 / 4'] },
   'large-left-split-right': { columns: 4, areas: ['1 / 1 / 3 / 3', '1 / 3 / 2 / 4', '1 / 4 / 2 / 5', '2 / 3 / 3 / 5'] },
@@ -18,7 +19,8 @@ const aspectRatio = computed(() => (stegaClean(props.block.aspectRatio) || '16:9
 </script>
 
 <template>
-  <div class="bento" :style="{ '--bento-columns': layout.columns, aspectRatio }">
+  <div class="bento" :class="{ 'split-75-25': stegaClean(block.layout) === 'stack-right-75-25' }"
+    :style="{ '--bento-columns': layout.columns, aspectRatio }">
     <CaseMediaBlock v-for="(tile, index) in block.tiles || []" :key="tile._key"
       class="bento-tile" :block="tile" :style="{ gridArea: layout.areas[index] }" />
   </div>
@@ -31,6 +33,8 @@ const aspectRatio = computed(() => (stegaClean(props.block.aspectRatio) || '16:9
   grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: var(--space);
 }
+
+.split-75-25 { grid-template-rows: minmax(0, 3fr) minmax(0, 1fr); }
 
 .bento-tile { min-width: 0; min-height: 0; }
 .bento-tile :deep(.fullscreen-media) { aspect-ratio: auto !important; }

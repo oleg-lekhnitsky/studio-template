@@ -27,7 +27,7 @@ export interface CaseBento {
   _key: string
   _type: 'bento'
   width?: 'full'
-  layout?: 'halves' | 'stack-left' | 'stack-right' | 'quarters' | 'thirds' | 'large-left' | 'large-right' | 'large-left-split-right'
+  layout?: 'halves' | 'stack-left' | 'stack-right' | 'stack-right-75-25' | 'quarters' | 'thirds' | 'large-left' | 'large-right' | 'large-left-split-right'
   aspectRatio?: '16:9' | '4:3' | '1:1' | '4:5'
   tiles?: CaseMediaTile[]
 }
