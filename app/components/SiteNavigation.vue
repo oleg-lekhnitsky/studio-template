@@ -6,10 +6,10 @@ defineProps<{ settings?: SiteSettings | null }>()
 
 <template>
   <nav aria-label="Main navigation">
-    <NuxtLink v-if="!settings?.disableCases" to="/cases">Cases</NuxtLink>
-    <NuxtLink v-if="!settings?.disableAbout" to="/about">About</NuxtLink>
-    <NuxtLink v-if="!settings?.disableJobs" to="/jobs">Jobs</NuxtLink>
+    <NuxtLink v-if="!settings?.disableCases" to="/projects">Projects</NuxtLink>
+    <NuxtLink v-if="!settings?.disableAbout" to="/about">About Us</NuxtLink>
     <NuxtLink v-if="!settings?.disableContact" to="/contact">Contact</NuxtLink>
+    <NuxtLink v-if="!settings?.disableJobs" to="/jobs">Crew</NuxtLink>
   </nav>
 </template>
 
@@ -40,9 +40,11 @@ nav a:focus-visible {
 
 @media (max-width: 720px) {
   nav {
-    flex-flow: row wrap;
+    flex-direction: row;
+    flex-wrap: nowrap;
     justify-content: flex-end;
-    gap: 4px 12px;
+    gap: clamp(8px, 3vw, 24px);
+    white-space: nowrap;
   }
 }
 </style>

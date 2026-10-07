@@ -15,7 +15,7 @@ const versionTwoPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL_VERSION_TWO
 
 const mainDocuments = defineDocuments([
   {
-    route: '/cases/:slug',
+    route: '/projects/:slug',
     filter: `_type == "case" && slug.current == $slug`
   },
   {
@@ -31,10 +31,10 @@ const locations = {
     resolve: document => ({
       locations: document?.slug
         ? [
-            { title: document.title || 'Untitled case', href: `/cases/${document.slug}` },
-            { title: 'All cases', href: '/cases' }
+            { title: document.title || 'Untitled case', href: `/projects/${document.slug}` },
+            { title: 'All projects', href: '/projects' }
           ]
-        : [{ title: 'Add a slug to preview this case', href: '/cases' }]
+        : [{ title: 'Add a slug to preview this case', href: '/projects' }]
     })
   }),
   job: defineLocations({

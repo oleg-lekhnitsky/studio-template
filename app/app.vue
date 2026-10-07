@@ -4,7 +4,7 @@ import type { SiteSettings } from '~/types/sanity'
 const route = useRoute()
 const requestUrl = useRequestURL()
 const runtimeConfig = useRuntimeConfig()
-const routeIsCasesIndex = () => route.path === '/cases' || route.path === '/cases/'
+const routeIsCasesIndex = () => route.path === '/projects' || route.path === '/projects/'
 const isCasesIndex = ref(routeIsCasesIndex())
 const { data: siteSettings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
 const imageUrl = useSanityImage()

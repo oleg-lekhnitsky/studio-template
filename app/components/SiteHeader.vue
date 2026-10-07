@@ -67,12 +67,14 @@ onBeforeUnmount(() => {
   <header class="header">
     <NuxtLink class="header-identity-link" to="/" :aria-label="`${settings?.headerText || 'Studio'} home`">
       <HeaderIdentity
+        class="desktop-identity"
         image-url="/icon.gif"
         :text="settings?.headerText || 'Studio'"
         :svg-url="settings?.headerLogoSvgUrl"
         :svg-color-mode="settings?.headerLogoColorMode || 'theme'"
         :lottie-url="settings?.headerLogoLottieUrl"
       />
+      <span class="mobile-identity">mmaze.studio</span>
     </NuxtLink>
     <div ref="navigation" :class="['header-navigation', {
       changing: navigationChanging,
@@ -121,6 +123,7 @@ onBeforeUnmount(() => {
 }
 
 .header:has(.over-footer) :deep(.image-logo) { filter: none; mix-blend-mode: multiply; }
+.mobile-identity { display: none; }
 
 .header > a:focus-visible {
   outline: none;
@@ -139,8 +142,12 @@ onBeforeUnmount(() => {
     position: relative;
     z-index: 1;
     flex-direction: row;
+    align-items: center;
+    gap: clamp(12px, 4vw, 32px);
+    font-size: clamp(11px, 3.3vw, 20px);
+    line-height: 1.2;
     height: auto;
-    padding: calc(var(--space) / 2) var(--space);
+    padding: var(--space);
   }
 
   .header-navigation {
@@ -150,9 +157,11 @@ onBeforeUnmount(() => {
 
   .header-identity-link {
     position: static;
-    margin-top: calc(-0.5 * var(--space));
-    margin-left: calc(-1 * var(--space));
+    flex-shrink: 0;
   }
+
+  .desktop-identity { display: none; }
+  .mobile-identity { display: block; font-weight: 700; letter-spacing: -.04em; }
 
 }
 </style>

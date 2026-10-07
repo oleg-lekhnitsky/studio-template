@@ -10,7 +10,7 @@ const posterUrl = useSanityImage()
 </script>
 
 <template>
-  <NuxtLink class="card" :to="`/cases/${item.slug}`">
+  <NuxtLink class="card" :to="`/projects/${item.slug}`">
     <div class="visual" :style="{ background: !item.coverVideoUrl && !item.cover?.asset?._ref ? fallback : undefined }">
       <AutoplayVideo v-if="item.coverVideoUrl" :src="item.coverVideoUrl"
         :poster="posterUrl(item.coverPoster || item.cover, 1600)" />

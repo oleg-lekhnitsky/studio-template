@@ -22,9 +22,9 @@ export default defineEventHandler(async (event) => {
   }
 
   const entries: SitemapEntry[] = [
-    ...['/', '/cases', '/about', '/jobs', '/contact'].map(path => ({ path })),
+    ...['/', '/projects', '/about', '/jobs', '/contact'].map(path => ({ path })),
     ...documents.map(document => ({
-      path: `/${document._type === 'job' ? 'jobs' : 'cases'}/${document.slug}`,
+      path: `/${document._type === 'job' ? 'jobs' : 'projects'}/${document.slug}`,
       lastmod: document._updatedAt
     }))
   ]

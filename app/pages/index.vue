@@ -5,7 +5,6 @@ const { data } = await useSanityQuery<CasePreview[]>(featuredCasesQuery)
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
 const items = computed(() => data.value?.length ? data.value : useDemoCases().slice(0, 4))
 const headline = computed(() => settings.value?.heroHeadline || 'Ideas, identities\nand digital experiences.')
-const studioName = computed(() => settings.value?.footerWordmark || settings.value?.headerText || 'mmaze.studio')
 </script>
 
 <template>
@@ -14,16 +13,15 @@ const studioName = computed(() => settings.value?.footerWordmark || settings.val
       <HeroSection class="home-desktop-hero" :headline="headline" :subheading="settings?.heroSubheading" :video-url="settings?.heroVideoUrl" :poster="settings?.heroPoster"
         sanity-path="heroVideo" />
       <section class="home-mobile-intro" aria-label="Studio introduction">
-        <p>{{ studioName }}</p>
         <h1>{{ headline }}</h1>
       </section>
       <div class="home-grid-toolbar">
-        <h2 v-if="!settings?.disableCases" id="latest-cases-heading">Latest cases:</h2>
+        <h2 v-if="!settings?.disableCases" id="latest-cases-heading">Latest projects:</h2>
       </div>
       <section v-if="!settings?.disableCases" class="home-grid" aria-labelledby="latest-cases-heading">
         <PreviewCard v-for="(item, index) in items" :key="item._id" :item="item" :index="index" />
       </section>
-      <NuxtLink v-if="!settings?.disableCases" class="show-all primary-button" to="/cases">View all cases</NuxtLink>
+      <NuxtLink v-if="!settings?.disableCases" class="show-all primary-button" to="/projects">View all projects</NuxtLink>
     </main>
   </PageFrame>
 </template>
