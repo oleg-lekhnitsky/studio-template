@@ -4,12 +4,12 @@ import type { CasePreview, CaseStudy } from '~/types/sanity'
 export const siteSettingsId = '4e409066-8870-4256-9bd0-a6b3b930ec39'
 
 export const casesQuery = groq`*[_type == "case"] | order(orderRank asc, _createdAt desc) {
-  _id, title, "slug": slug.current, year, "categories": categories[]->title, summary, cover,
+  _id, title, previewTitle, "slug": slug.current, year, "categories": categories[]->title, summary, cover,
   "coverVideoUrl": coverVideo.asset->url, coverPoster
 }`
 
 export const featuredCasesQuery = groq`*[_type == "case" && featured == true] | order(orderRank asc, _createdAt desc) [0...6] {
-  _id, title, "slug": slug.current, year, "categories": categories[]->title, summary, cover,
+  _id, title, previewTitle, "slug": slug.current, year, "categories": categories[]->title, summary, cover,
   "coverVideoUrl": coverVideo.asset->url, coverPoster
 }`
 

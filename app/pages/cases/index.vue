@@ -36,7 +36,7 @@ const masonryColumns = computed(() => {
       ? columnWidth.value * dimensions.height / dimensions.width
       : columnWidth.value * 3 / 4
     const charactersPerLine = Math.max(1, columnWidth.value / (captionFontSize.value * .5))
-    const titleLines = Math.ceil(item.title.length / charactersPerLine)
+    const titleLines = Math.ceil((item.previewTitle?.trim() || item.title).length / charactersPerLine)
     const summaryLines = item.summary ? Math.ceil(item.summary.length / charactersPerLine) : 0
     return mediaHeight + (titleLines + summaryLines) * captionLineHeight.value + 9 + cardSpace.value * 1.75
   })

@@ -6,6 +6,12 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({ name: 'title', type: 'string', validation: rule => rule.required() }),
+    defineField({
+      name: 'previewTitle',
+      title: 'Preview title',
+      description: 'Optional title shown on case cards. Leave empty to use the main title.',
+      type: 'string'
+    }),
     defineField({ name: 'slug', type: 'slug', options: { source: 'title' }, validation: rule => rule.required() }),
     defineField({ name: 'year', type: 'string' }),
     defineField({

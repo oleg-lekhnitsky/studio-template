@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { stegaClean } from '@sanity/client/stega'
 import type { CasePreview } from '~/types/sanity'
 const props = defineProps<{ item: CasePreview; index?: number }>()
+const cardTitle = computed(() => stegaClean(props.item.previewTitle || '').trim()
+  ? props.item.previewTitle : props.item.title)
 const fallback = computed(() => `hsl(${((props.index || 0) * 47) % 360} 12% ${88 - ((props.index || 0) % 3) * 7}%)`)
 const dimensions = computed(() => sanityImageDimensions(props.item.cover?.asset?._ref))
 const posterUrl = useSanityImage()
@@ -12,14 +15,14 @@ const posterUrl = useSanityImage()
       <AutoplayVideo v-if="item.coverVideoUrl" :src="item.coverVideoUrl"
         :poster="posterUrl(item.coverPoster || item.cover, 1600)" />
       <NuxtImg v-else-if="item.cover?.asset?._ref" provider="sanity" :src="item.cover.asset._ref"
-        :alt="item.cover.alt || item.title" :width="dimensions.width" :height="dimensions.height"
+        :alt="item.cover.alt || cardTitle" :width="dimensions.width" :height="dimensions.height"
         sizes="sm:100vw md:50vw lg:50vw xl:50vw 2xl:50vw"
         :modifiers="{ crop: item.cover.crop, hotspot: item.cover.hotspot }" loading="lazy" />
       <span v-else class="placeholder display">{{ String((index || 0) + 1).padStart(2, '0') }}</span>
     </div>
     <div class="meta">
       <div class="details">
-        <span>{{ item.title }}</span>
+        <span>{{ cardTitle }}</span>
         <span v-if="item.summary" class="description">{{ item.summary }}</span>
       </div>
     </div>

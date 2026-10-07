@@ -10,6 +10,7 @@ export interface SanityImage {
 export interface CasePreview {
   _id: string
   title: string
+  previewTitle?: string
   slug: string
   year?: string
   categories?: string[]

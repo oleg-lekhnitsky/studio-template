@@ -26,9 +26,17 @@ function positionNavigation() {
 
     const space = Number.parseFloat(getComputedStyle(footer).paddingTop) || 12
     const restingTop = window.innerHeight - element.offsetHeight - space
-    const footerTop = footer.getBoundingClientRect().top + space
-    const top = Math.max(space, Math.min(restingTop, footerTop))
-    navigationOverFooter.value = footerTop <= restingTop
+    const footerTop = footer.getBoundingClientRect().top
+    const socials = footer.querySelector<HTMLElement>('.footer-socials')
+    const firstLink = element.querySelector<HTMLElement>('nav a')
+    const linkOffset = firstLink
+      ? firstLink.getBoundingClientRect().top - element.getBoundingClientRect().top
+      : 0
+    const socialTop = socials?.getBoundingClientRect().top
+      ?? footerTop + footer.offsetHeight / 2
+    const footerNavigationTop = socialTop - linkOffset
+    const top = Math.min(restingTop, footerNavigationTop)
+    navigationOverFooter.value = top >= footerTop
     navigationStyle.value = { top: `${top}px`, bottom: 'auto' }
   })
 }
@@ -104,12 +112,15 @@ onBeforeUnmount(() => {
 .header-navigation.over-footer { color: #000; }
 
 .header-identity-link {
+  position: fixed;
+  top: 0;
+  left: 0;
   display: block;
   width: fit-content;
   max-width: 100%;
-  margin-top: calc(-1 * var(--space));
-  margin-left: calc(-1 * var(--space));
 }
+
+.header:has(.over-footer) :deep(.image-logo) { filter: none; mix-blend-mode: multiply; }
 
 .header > a:focus-visible {
   outline: none;
@@ -138,7 +149,9 @@ onBeforeUnmount(() => {
   }
 
   .header-identity-link {
+    position: static;
     margin-top: calc(-0.5 * var(--space));
+    margin-left: calc(-1 * var(--space));
   }
 
 }
