@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { stegaClean } from '@sanity/client/stega'
 import type { CasePreview, SiteSettings } from '~/types/sanity'
 import { balanceMasonry } from '~/utils/balanceMasonry'
 
@@ -6,9 +7,16 @@ const { data } = await useSanityQuery<CasePreview[]>(casesQuery)
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
 if (settings.value?.disableCases) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 const router = useRouter()
+const route = useRoute()
 const items = computed(() => data.value?.length ? data.value : useDemoCases())
-const selectedCategory = ref('All')
-const displayedCategory = ref('All')
+const categoryKey = (value: string) => stegaClean(value).trim().toLowerCase()
+function categoryFromUrl() {
+  const requested = typeof route.query.category === 'string' ? route.query.category.trim() : ''
+  if (!requested || categoryKey(requested) === 'all') return 'All'
+  return items.value.flatMap(item => item.categories || []).find(category => categoryKey(category) === categoryKey(requested)) || 'All'
+}
+const selectedCategory = ref(categoryFromUrl())
+const displayedCategory = ref(selectedCategory.value)
 const cardsVisible = ref(true)
 const toolbarVisible = ref(true)
 const masonryColumnCount = ref(4)
@@ -26,7 +34,7 @@ const categories = computed(() => [
 ])
 const filteredItems = computed(() => displayedCategory.value === 'All'
   ? items.value
-  : items.value.filter(item => item.categories?.includes(displayedCategory.value)))
+  : items.value.filter(item => item.categories?.some(category => categoryKey(category) === categoryKey(displayedCategory.value))))
 const masonryColumns = computed(() => {
   const entries = filteredItems.value.map((item, index) => ({ item, index }))
   return balanceMasonry(entries, masonryColumnCount.value, ({ item }) => {
@@ -61,6 +69,10 @@ function syncMasonryColumns() {
 async function selectCategory(category: string) {
   if (category === selectedCategory.value && cardsVisible.value) return
   selectedCategory.value = category
+  const query = { ...route.query }
+  if (category === 'All') delete query.category
+  else query.category = stegaClean(category)
+  void router.replace({ query })
   cardsVisible.value = false
   const sequence = ++filterSequence
 
@@ -74,6 +86,11 @@ async function selectCategory(category: string) {
     if (sequence === filterSequence) cardsVisible.value = true
   })
 }
+
+watch(() => route.query.category, () => {
+  const category = categoryFromUrl()
+  if (category !== selectedCategory.value) void selectCategory(category)
+})
 
 function closeCases() {
   if (window.history.state?.back) router.back()

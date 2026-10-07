@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { stegaClean } from '@sanity/client/stega'
 import type { SiteSettings } from '~/types/sanity'
 
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
@@ -29,7 +30,9 @@ const services = computed(() => settings.value?.aboutServices ?? ['Video Product
       <section v-if="services.length" class="about-section" aria-labelledby="services-title">
         <h2 id="services-title">Services:</h2>
         <ul class="services-list">
-          <li v-for="(service, index) in services" :key="index">{{ service }}</li>
+          <li v-for="(service, index) in services" :key="index">
+            <NuxtLink :to="{ path: '/cases', query: { category: stegaClean(service).trim() } }">{{ service }}</NuxtLink>
+          </li>
         </ul>
       </section>
     </main>
@@ -82,6 +85,12 @@ const services = computed(() => settings.value?.aboutServices ?? ['Video Product
   display: flex;
   flex-wrap: wrap;
   column-gap: .8em;
+}
+
+.services-list a {
+  text-decoration: underline;
+  text-decoration-thickness: .06em;
+  text-underline-offset: .12em;
 }
 
 @media (max-width: 720px) {

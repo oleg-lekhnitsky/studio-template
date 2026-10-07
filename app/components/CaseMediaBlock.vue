@@ -112,7 +112,11 @@ const mediaAspectRatio = computed(() => {
   .half {
     grid-column: span 12;
   }
-  .text-block { grid-template-columns: 1fr; }
+  .text-block {
+    grid-template-columns: 1fr;
+    padding-top: calc(var(--space) * 5);
+    padding-bottom: calc(var(--space) * 2);
+  }
 }
 
 </style>
