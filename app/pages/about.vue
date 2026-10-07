@@ -95,6 +95,11 @@ const services = computed(() => settings.value?.aboutServices ?? ['Video Product
 
 @media (max-width: 720px) {
   .about-section { margin-top: 96px; }
-  .about-introduction { line-height: 1.4; }
+  .about-introduction {
+    margin-top: calc(var(--space) * 6);
+    font-size: var(--small);
+    line-height: 1.25;
+  }
+  .about-introduction + .about-section { margin-top: calc(var(--space) * 6); }
 }
 </style>
