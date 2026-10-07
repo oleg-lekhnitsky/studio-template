@@ -93,7 +93,7 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
           <dd>{{ current.year }}</dd>
         </template>
         <template v-if="project?.cast?.length">
-          <dt>Team</dt>
+          <dt class="team-label">Team</dt>
           <dd class="team-credits">
             <template v-for="group in creditGroups" :key="group.people[0]._key">
               <span>{{ group.role }}:
@@ -210,8 +210,13 @@ p {
   }
 
   .case-details {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
+    gap: calc(var(--space) * 1.5);
+    font-size: var(--small);
+    line-height: 1.3;
   }
+
+  .case-details dd + .team-label { margin-top: calc(var(--space) * 2); }
 }
 </style>
