@@ -1,5 +1,5 @@
 :root {
-  --font-family: Inter, sans-serif;
+  --font-family: 'Inter Tight', sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1;
   --space: clamp(12px, 1vw, 24px);
   --small: clamp(13px, .75vw, 20px);
@@ -19,12 +19,6 @@
   --opacity-secondary: .3;
   color-scheme: light;
   
-}
-
-@supports (font-variation-settings: normal) {
-  :root {
-    --font-family: InterVariable, sans-serif;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
