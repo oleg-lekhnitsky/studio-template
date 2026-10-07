@@ -78,7 +78,8 @@ const headline = computed(() => settings.value?.heroHeadline || 'Ideas, identiti
     justify-content: center;
     gap: 16px;
     min-height: clamp(280px, 72vw, 520px);
-    padding: 0 16px 56px;
+    padding: 0 16px 32px;
+    
     text-align: center;
   }
 
