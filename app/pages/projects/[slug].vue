@@ -52,7 +52,7 @@ const introductionParagraphs = computed(() => (project.value?.description || '')
   .map(paragraph => paragraph.trim())
   .filter(Boolean))
 const creditGroups = computed(() => {
-  const groups = new Map<string, { role: string; people: NonNullable<CaseStudy['cast']> }>()
+  const groups = new Map<string, { key: string; role: string; people: NonNullable<CaseStudy['cast']> }>()
   for (const credit of project.value?.cast || []) {
     const people = [
       ...(credit.name ? [{ _key: credit._key, role: credit.role, name: credit.name, url: credit.url }] : []),
@@ -62,7 +62,7 @@ const creditGroups = computed(() => {
     const key = stegaClean(credit.role).trim().toLowerCase()
     const group = groups.get(key)
     if (group) group.people.push(...people)
-    else groups.set(key, { role: credit.role, people })
+    else groups.set(key, { key, role: credit.role, people })
   }
   return [...groups.values()]
 })
@@ -95,7 +95,7 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
         <template v-if="project?.cast?.length">
           <dt class="team-label">Team</dt>
           <dd class="team-credits">
-            <template v-for="group in creditGroups" :key="group.people[0]._key">
+            <template v-for="group in creditGroups" :key="group.key">
               <span>{{ group.role }}:
                 <template v-for="(credit, index) in group.people" :key="credit._key">
                   <template v-if="index">{{ ', ' }}</template>
