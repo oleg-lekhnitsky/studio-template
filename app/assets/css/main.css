@@ -243,6 +243,12 @@ textarea {
 }
 
 @media (max-width: 720px) {
+  :root {
+    --letter-spacing: 0em;
+    --letter-spacing-medium: calc(-0.015em / 0.6);
+    --letter-spacing-large: calc(-0.015em / 0.4);
+  }
+
   .site-shell {
     display: block;
   }

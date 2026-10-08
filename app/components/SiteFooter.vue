@@ -196,6 +196,7 @@ onBeforeUnmount(() => observer?.disconnect())
     grid-column: 2;
     grid-row: 1;
     margin-right: -16px;
+    margin-top: 4px;
   }
 
   .footer-clients-label {
