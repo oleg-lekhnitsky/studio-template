@@ -11,8 +11,9 @@ const props = withDefaults(defineProps<{
 })
 
 const playerAspectRatio = computed(() => {
-  const [width, height] = stegaClean(props.aspectRatio).split(':').map(Number)
-  return width > 0 && height > 0 ? `${width} / ${height}` : '16 / 9'
+  const [width = 0, height = 0] = stegaClean(props.aspectRatio).split(':').map(Number)
+  return Number.isFinite(width) && Number.isFinite(height) && width > 0 && height > 0
+    ? `${width} / ${height}` : '16 / 9'
 })
 
 function getVimeoEmbedUrl(source: string) {
