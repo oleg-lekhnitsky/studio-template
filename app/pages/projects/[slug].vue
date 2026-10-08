@@ -143,7 +143,7 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
 }
 
 .team-credits {
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
 .credit-name {
