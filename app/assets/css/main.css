@@ -37,9 +37,9 @@
   --small: clamp(13px, .75vw, 20px);
   --medium: clamp(24px, 3vw, 32px);
   --large: clamp(32px, 3.5vw, 72px);
-  --letter-spacing: -0.015em;
-  --letter-spacing-medium: calc(var(--letter-spacing) / 0.6);
-  --letter-spacing-large: calc(var(--letter-spacing) / 0.4);
+  --letter-spacing: 0em;
+  --letter-spacing-medium: calc(-0.015em / 0.6);
+  --letter-spacing-large: calc(-0.015em / 0.4);
   --accent: #8CC318;
   --radius: clamp(8px, .75vw, 16px);
   --background: #fff;
@@ -243,12 +243,6 @@ textarea {
 }
 
 @media (max-width: 720px) {
-  :root {
-    --letter-spacing: 0em;
-    --letter-spacing-medium: calc(-0.015em / 0.6);
-    --letter-spacing-large: calc(-0.015em / 0.4);
-  }
-
   .site-shell {
     display: block;
   }

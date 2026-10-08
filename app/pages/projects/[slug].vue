@@ -133,17 +133,13 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space);
-  margin: calc(var(--space) * 3) 0 0;
-  padding: var(--space);
+  margin: 0;
+  padding: calc(var(--space) * 3) var(--space);
 }
 
 .case-details dt,
 .case-details dd {
   margin: 0;
-}
-
-.case-details {
-  padding-block: calc(var(--space) * 4);
 }
 
 .team-credits {
@@ -214,10 +210,17 @@ p {
   .case-details {
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
-    gap: calc(var(--space) * 1.5);
+    gap: var(--space);
+    padding-top: calc(var(--space) * 5);
+    padding-bottom: calc(var(--space) * 2);
+    padding-inline: 0;
+    margin: 0 var(--space) var(--space);
     font-size: var(--small);
     line-height: 1.3;
   }
+
+  .media-grid:has(+ .case-details) { padding-bottom: 0; }
+  .media-grid:has(+ .case-details) :deep(> :last-child) { margin-bottom: 0; }
 
   .case-details dd + .team-label { margin-top: calc(var(--space) * 2); }
 }
