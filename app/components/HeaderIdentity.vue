@@ -64,8 +64,8 @@ const maskStyle = computed(() => props.svgUrl
 
 .image-logo {
   display: block;
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   max-width: 100%;
   object-fit: contain;
   border-radius: 0;

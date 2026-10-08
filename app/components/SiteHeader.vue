@@ -4,6 +4,8 @@ import type { SiteSettings } from '~/types/sanity'
 defineProps<{ settings?: SiteSettings | null }>()
 
 const navigation = ref<HTMLElement | null>(null)
+const identity = ref<{ $el: HTMLElement } | null>(null)
+const identityOverFooter = ref(false)
 const navigationStyle = ref<Record<string, string>>({})
 const navigationChanging = ref(false)
 const navigationOverFooter = ref(false)
@@ -21,12 +23,16 @@ function positionNavigation() {
     if (!element || !footer || window.innerWidth <= 720) {
       navigationStyle.value = {}
       navigationOverFooter.value = false
+      identityOverFooter.value = false
       return
     }
 
     const space = Number.parseFloat(getComputedStyle(footer).paddingTop) || 12
     const restingTop = window.innerHeight - element.offsetHeight - space
     const footerTop = footer.getBoundingClientRect().top
+    const identityRect = identity.value?.$el.getBoundingClientRect()
+    identityOverFooter.value = !!identityRect
+      && footerTop <= identityRect.top + identityRect.height / 2
     const socials = footer.querySelector<HTMLElement>('.footer-socials')
     const firstLink = element.querySelector<HTMLElement>('nav a')
     const linkOffset = firstLink
@@ -65,7 +71,8 @@ onBeforeUnmount(() => {
 
 <template>
   <header class="header">
-    <NuxtLink class="header-identity-link" to="/" :aria-label="`${settings?.headerText || 'Studio'} home`">
+    <NuxtLink ref="identity" class="header-identity-link" :class="{ 'over-footer': identityOverFooter }"
+      to="/" :aria-label="`${settings?.headerText || 'Studio'} home`">
       <HeaderIdentity
         class="desktop-identity"
         image-url="/icon.gif"
@@ -122,7 +129,7 @@ onBeforeUnmount(() => {
   max-width: 100%;
 }
 
-.header:has(.over-footer) :deep(.image-logo) { filter: none; mix-blend-mode: multiply; }
+.header-identity-link.over-footer :deep(.image-logo) { filter: none; mix-blend-mode: multiply; }
 .mobile-identity { display: none; }
 
 .header > a:focus-visible {

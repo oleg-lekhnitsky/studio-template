@@ -74,7 +74,15 @@ const mediaAspectRatio = computed(() => {
   letter-spacing: var(--letter-spacing-medium);
 }
 
+.media-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
 .media-frame :deep(.media-source) {
+  position: absolute;
+  inset: 0;
   height: 100%;
   overflow: hidden;
   border-radius: var(--radius);

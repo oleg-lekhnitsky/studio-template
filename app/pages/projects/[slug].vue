@@ -113,6 +113,8 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
 </template>
 
 <style scoped>
+.case-page > * { flex-shrink: 0; }
+
 .case-head {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

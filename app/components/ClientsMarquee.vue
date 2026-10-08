@@ -26,7 +26,7 @@ const paused = ref(false)
   cursor: default;
   min-width: 0;
   overflow: hidden;
-  font-size: var(--large);
+  font-size: calc(var(--medium) * .75);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: var(--letter-spacing-large);
