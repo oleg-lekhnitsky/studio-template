@@ -11,7 +11,10 @@ const current = computed(() => project.value || demo.value)
 const imageUrl = useSanityImage()
 const metaTitle = computed(() => current.value?.title || 'Case')
 const metaDescription = computed(() => project.value?.description || current.value?.summary || 'A selected studio case study.')
-const metaImage = computed(() => imageUrl(project.value?.cover, 1200) || undefined)
+const config = useRuntimeConfig()
+const requestUrl = useRequestURL()
+const metaImage = computed(() => imageUrl(project.value?.cover, 1200)
+  || new URL('/ogimage.png', config.public.siteUrl || requestUrl.origin).toString())
 
 useSeoMeta({
   title: () => metaTitle.value,

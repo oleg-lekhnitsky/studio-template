@@ -6,6 +6,9 @@ export function usePageSeo(
   fallbackDescription: string
 ) {
   const imageUrl = useSanityImage()
+  const config = useRuntimeConfig()
+  const requestUrl = useRequestURL()
+  const defaultImage = new URL('/ogimage.png', config.public.siteUrl || requestUrl.origin).toString()
   useSeoMeta({
     title: () => toValue(seo)?.title || fallbackTitle,
     description: () => toValue(seo)?.description || fallbackDescription,
@@ -13,7 +16,7 @@ export function usePageSeo(
     ogDescription: () => toValue(seo)?.description || fallbackDescription,
     twitterTitle: () => toValue(seo)?.title || fallbackTitle,
     twitterDescription: () => toValue(seo)?.description || fallbackDescription,
-    ogImage: () => imageUrl(toValue(seo)?.image, 1200) || undefined,
-    twitterImage: () => imageUrl(toValue(seo)?.image, 1200) || undefined
+    ogImage: () => imageUrl(toValue(seo)?.image, 1200) || defaultImage,
+    twitterImage: () => imageUrl(toValue(seo)?.image, 1200) || defaultImage
   })
 }

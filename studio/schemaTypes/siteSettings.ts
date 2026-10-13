@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { privacyPolicyDefaults } from './privacyPolicyDefaults'
 
 const pageSeo = (name: string, title: string) => defineField({
   name,
@@ -91,9 +92,46 @@ export default defineType({
     { name: 'about', title: 'About' },
     { name: 'jobs', title: 'Jobs' },
     { name: 'contact', title: 'Contact' },
+    { name: 'privacy', title: 'Privacy policy' },
     { name: 'seo', title: 'SEO' }
   ],
   fields: [
+    defineField({
+      name: 'privacyPolicy',
+      title: 'Privacy policy',
+      type: 'object',
+      group: 'privacy',
+      initialValue: privacyPolicyDefaults,
+      description: 'Content for /privacy. Keep the draft notice until the legal identity and policy details are confirmed. Empty sections use the website’s default policy.',
+      fields: [
+        defineField({ name: 'title', title: 'Heading', type: 'string', validation: rule => rule.required() }),
+        defineField({ name: 'updatedAt', title: 'Last updated', type: 'date' }),
+        defineField({ name: 'draftNote', title: 'Draft notice', type: 'text', rows: 2, description: 'Clear this only when the policy is ready for publication.' }),
+        defineField({
+          name: 'sections', title: 'Sections', type: 'array',
+          of: [{
+            type: 'object', name: 'privacySection', title: 'Section',
+            fields: [
+              defineField({ name: 'heading', title: 'Heading', type: 'string', validation: rule => rule.required() }),
+              defineField({
+                name: 'body', title: 'Text', type: 'array', validation: rule => rule.required().min(1),
+                of: [{
+                  type: 'block', styles: [{ title: 'Paragraph', value: 'normal' }], lists: [],
+                  marks: {
+                    decorators: [{ title: 'Strong', value: 'strong' }, { title: 'Emphasis', value: 'em' }],
+                    annotations: [{
+                      name: 'link', type: 'object', title: 'Link',
+                      fields: [defineField({ name: 'href', title: 'URL', type: 'url', validation: rule => rule.required().uri({ allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel'] }) })]
+                    }]
+                  }
+                }]
+              })
+            ],
+            preview: { select: { title: 'heading' } }
+          }]
+        })
+      ]
+    }),
     defineField({
       name: 'disableCases',
       title: 'Disable Cases page',

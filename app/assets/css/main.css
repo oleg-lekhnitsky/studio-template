@@ -1,3 +1,5 @@
+@import './error-state-shake.css';
+
 @font-face {
   font-family: 'Inter Tight';
   src: url('/fonts/InterTight-Regular.ttf') format('truetype');
@@ -81,6 +83,8 @@ html {
 }
 
 body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   margin: 0;
   background: var(--background);
   font-family: var(--font-family);
@@ -125,11 +129,12 @@ textarea {
   width: fit-content;
   align-items: center;
   justify-content: center;
-  padding: 1.0em 1.75em;
+  padding: .5em 1.0em;
   border: 0;
-  border-radius: 999px;
-  color: var(--button-foreground);
-  background: var(--button-background);
+  border-radius: var(--radius);
+  color: var(--button-background);
+  background: var(--button-foreground);
+  border: 1px solid var(--button-background);
   text-align: center;
   cursor: pointer;
   position: relative;
@@ -163,6 +168,13 @@ textarea {
 
 .primary-button--left {
   margin-left: -4px;
+}
+
+.primary-button--dark,
+.primary-button--dark:hover {
+  color: #fff;
+  background: #141414;
+  border-color: #141414;
 }
 
 .sr-only {

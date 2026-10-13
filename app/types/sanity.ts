@@ -98,6 +98,12 @@ export interface SiteSettings {
   aboutSeo?: PageSeo
   contactSeo?: PageSeo
   contactHeading?: TypedObject[]
+  privacyPolicy?: {
+    title?: string
+    updatedAt?: string
+    draftNote?: string
+    sections?: Array<{ _key: string; heading: string; body: TypedObject[] }>
+  }
   contactFormFields?: FormField[]
   jobFormFields?: FormField[]
   socialLinks?: SocialLink[]

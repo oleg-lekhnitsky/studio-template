@@ -73,7 +73,7 @@ const services = computed(() => settings.value?.aboutServices ?? ['Video Product
   padding: 0;
   list-style: none;
   font-size: clamp(32px, 3.5vw, 72px);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.2;
   letter-spacing: var(--letter-spacing-medium);
 }
@@ -94,12 +94,15 @@ const services = computed(() => settings.value?.aboutServices ?? ['Video Product
 }
 
 @media (max-width: 720px) {
+  .services-list { flex-direction: column; align-items: flex-start; }
+  .about-hero { margin-top: calc(var(--space) * 12); }
   .about-section { margin-top: 96px; }
   .about-introduction {
-    margin-top: calc(var(--space) * 6);
+    margin-top: calc(var(--space) * 7);
     font-size: var(--small);
     line-height: 1.25;
   }
-  .about-introduction + .about-section { margin-top: calc(var(--space) * 6); }
+  .about-introduction + .about-section { margin-top: calc(var(--space) * 7); }
+  .about-section + .about-section { margin-top: calc(var(--space) * 26); }
 }
 </style>

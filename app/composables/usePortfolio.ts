@@ -46,6 +46,7 @@ export const siteSettingsQuery = groq`*[_type == "siteSettings" && _id == "${sit
   aboutSeo,
   contactSeo,
   contactHeading,
+  privacyPolicy,
   contactFormFields[]{ _key, label, type, placeholder, required },
   jobFormFields[]{ _key, label, type, placeholder, required },
   socialLinks[]{ _key, label, url },

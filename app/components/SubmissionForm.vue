@@ -7,6 +7,7 @@ const props = withDefaults(defineProps<{
   submitLabel?: string
   showPortfolio?: boolean
   fields?: FormField[]
+  appearance?: 'default' | 'contact'
 }>(), { submitLabel: 'Send message', showPortfolio: false })
 
 const defaultFields = computed<FormField[]>(() => [
@@ -24,6 +25,12 @@ function fieldName(field: FormField) {
   return `field-${field._key}`
 }
 
+function placeholder(field: FormField) {
+  if (props.appearance !== 'contact') return field.placeholder
+  const text = field.placeholder || (field.type === 'textarea' ? 'A few words about what you need' : field.label)
+  return `${text}${field.required ? '*' : ''}`
+}
+
 function autocomplete(field: FormField) {
   if (field.type === 'email') return 'email'
   if (field.type === 'tel') return 'tel'
@@ -36,15 +43,36 @@ const sent = ref(false)
 const sending = ref(false)
 const error = ref('')
 const status = ref('')
+const errorAttempt = ref(0)
+const fieldErrors = reactive<Record<string, string>>({})
+
+function shake(element: HTMLElement) {
+  element.classList.remove('is-shaking')
+  void element.offsetWidth
+  element.classList.add('is-shaking')
+}
+
+function finishShake(event: AnimationEvent) {
+  if (event.animationName === 't-input-shake') {
+    ;(event.target as HTMLElement).classList.remove('is-shaking')
+  }
+}
 
 function markInvalid(event: Event) {
+  event.preventDefault()
   const field = event.target as HTMLInputElement | HTMLTextAreaElement
   field.setAttribute('aria-invalid', 'true')
+  fieldErrors[field.id] = field.validationMessage
+  shake(field)
 }
 
 function clearInvalid(event: Event) {
   const field = event.target as HTMLInputElement | HTMLTextAreaElement
-  if (field.validity.valid) field.removeAttribute('aria-invalid')
+  if (field.validity.valid) {
+    field.removeAttribute('aria-invalid')
+    field.classList.remove('is-shaking')
+    delete fieldErrors[field.id]
+  }
 }
 
 function submitFromTextarea(event: KeyboardEvent) {
@@ -56,6 +84,12 @@ function submitFromTextarea(event: KeyboardEvent) {
 
 async function submit(event: Event) {
   const form = event.currentTarget as HTMLFormElement
+  if (sending.value) return
+  if (!form.checkValidity()) {
+    await nextTick()
+    form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[aria-invalid="true"]')?.focus()
+    return
+  }
   const values = new FormData(form)
   sending.value = true
   error.value = ''
@@ -87,6 +121,7 @@ async function submit(event: Event) {
         ? 'This form is temporarily unavailable. Try again later.'
         : 'Unable to send. Check your connection and try again.'
     status.value = ''
+    errorAttempt.value++
   } finally {
     sending.value = false
   }
@@ -95,33 +130,43 @@ async function submit(event: Event) {
 
 <template>
   <p class="sr-only" role="status">{{ status }}</p>
-  <div class="submission-form">
-    <form :class="{ 'is-sent': sent }" :aria-hidden="sent" :inert="sent" :aria-busy="sending"
-      @submit.prevent="submit" @invalid.capture="markInvalid" @input.capture="clearInvalid">
+  <div class="submission-form" :class="{ 'submission-form--contact': appearance === 'contact' }">
+    <form novalidate :class="{ 'is-sent': sent }" :aria-hidden="sent" :inert="sent" :aria-busy="sending"
+      @submit.prevent="submit" @invalid.capture="markInvalid" @input.capture="clearInvalid" @animationend="finishShake">
       <p class="form-note">{{ allFieldsRequired ? 'All fields are required.' : 'Required fields are marked *.' }}</p>
       <label class="website" inert>
         Company website
         <input name="company" tabindex="-1" autocomplete="off">
       </label>
-      <label v-for="field in activeFields" :key="field._key" :for="fieldName(field)">
+      <label v-for="field in activeFields" :key="field._key" :for="fieldName(field)"
+        class="t-input-wrap" :class="{ 'is-error': fieldErrors[fieldName(field)] }">
         <span>{{ field.label }}<span v-if="field.required && !allFieldsRequired" aria-hidden="true"> *</span></span>
-        <textarea v-if="field.type === 'textarea'" :id="fieldName(field)" :name="fieldName(field)"
-          rows="6" maxlength="3000" :placeholder="field.placeholder" :required="field.required"
+        <textarea v-if="field.type === 'textarea'" :id="fieldName(field)" :name="fieldName(field)" class="t-input"
+          :aria-describedby="fieldErrors[fieldName(field)] ? `${fieldName(field)}-error` : undefined"
+          rows="6" maxlength="3000" :placeholder="placeholder(field)" :required="field.required"
           @keydown="submitFromTextarea" />
-        <input v-else :id="fieldName(field)" :name="fieldName(field)" :type="field.type"
+        <input v-else :id="fieldName(field)" :name="fieldName(field)" :type="field.type" class="t-input"
+          :aria-describedby="fieldErrors[fieldName(field)] ? `${fieldName(field)}-error` : undefined"
           :autocomplete="autocomplete(field)" :spellcheck="field.type === 'email' || field.type === 'url' ? false : undefined"
           :maxlength="field.type === 'email' ? 254 : field.type === 'url' ? 500 : 300"
-          :placeholder="field.placeholder" :required="field.required">
+          :placeholder="placeholder(field)" :required="field.required">
+        <p v-if="fieldErrors[fieldName(field)]" :id="`${fieldName(field)}-error`" class="t-error-msg">
+          {{ fieldErrors[fieldName(field)] }}
+        </p>
       </label>
       <div class="form-actions">
-        <button class="primary-button primary-button--left" type="submit" :disabled="sending">
+        <button class="primary-button primary-button--left"
+          :class="{ 'primary-button--dark': appearance === 'contact' }" type="submit" :disabled="sending">
           <span v-if="sending" class="spinner" aria-hidden="true" />
           <span>{{ submitLabel }}</span>
           <span v-if="sending" class="sr-only">— sending</span>
         </button>
-        <p class="privacy-note">By submitting, you allow us to use these details to respond to your enquiry.</p>
+        <p class="privacy-note">
+          We’ll use your details to {{ showPortfolio ? 'consider your application' : 'respond to your enquiry' }}.
+          <NuxtLink to="/privacy">Privacy policy</NuxtLink>.
+        </p>
       </div>
-      <p v-if="error" role="alert">{{ error }}</p>
+      <p v-if="error" :key="errorAttempt" class="t-input is-shaking" role="alert">{{ error }}</p>
     </form>
     <p v-if="sent" class="success display">{{ successMessage }}</p>
   </div>
@@ -142,9 +187,54 @@ textarea { resize: vertical; }
 .primary-button { justify-self: start; }
 .form-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space); align-items: start; }
 .form-note, .privacy-note { opacity: var(--opacity-secondary); }
+.privacy-note a { text-decoration: underline; text-underline-offset: .15em; }
 .spinner { width: .75em; height: .75em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
 .website { position: absolute; left: -10000px; }
 p { margin: 0; }
+
+.submission-form--contact { container-type: inline-size; }
+.submission-form--contact form { gap: clamp(8px, 2cqw, 32px); }
+.submission-form--contact label:not(.website) > span,
+.submission-form--contact .form-note {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.submission-form--contact input,
+.submission-form--contact textarea {
+  border: 0;
+  border-radius: var(--radius);
+  padding: clamp(14px, 4cqw, 64px);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--background));
+  color: var(--foreground);
+  font-size: clamp(14px, 2.4cqw, 40px);
+  line-height: 1.3;
+}
+.submission-form--contact input::placeholder,
+.submission-form--contact textarea::placeholder { color: color-mix(in srgb, var(--foreground) 35%, var(--background)); opacity: 1; }
+.submission-form--contact textarea { min-height: clamp(120px, 28cqw, 448px); }
+.submission-form--contact input:focus-visible,
+.submission-form--contact textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.submission-form--contact .form-actions { grid-template-columns: 1fr; gap: 16px; margin-top: clamp(4px, 1cqw, 16px); }
+.submission-form--contact .primary-button {
+  width: 39%;
+  min-width: 120px;
+  margin-left: 0;
+  border-radius: var(--radius);
+  padding: clamp(10px, 2.5cqw, 40px);
+  font-size: clamp(14px, 2.4cqw, 40px);
+}
+.submission-form--contact .privacy-note { font-size: 12px; }
+
+input[aria-invalid='true'],
+textarea[aria-invalid='true'] {
+  outline: 2px solid #d93a3a;
+  outline-offset: 3px;
+}
 
 @keyframes spin { to { transform: rotate(1turn); } }
 
@@ -154,6 +244,7 @@ p { margin: 0; }
 
 @media (max-width: 720px) {
   .form-actions { grid-template-columns: 1fr; }
+  .submission-form--contact .primary-button { width: 100%; min-width: 0; padding: 20px; }
 }
 
 @media (forced-colors: active) {

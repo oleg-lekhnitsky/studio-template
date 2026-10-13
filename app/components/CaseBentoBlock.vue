@@ -52,6 +52,14 @@ const aspectRatio = computed(() => (stegaClean(props.block.aspectRatio) || '16:9
 @media (max-width: 720px) {
   .bento { display: flex; flex-direction: column; aspect-ratio: auto !important; }
   .bento-tile { aspect-ratio: auto; }
+  .bento-tile :deep(.media-frame .media-source) {
+    position: relative;
+    inset: auto;
+    height: auto;
+  }
+  .bento-tile :deep(.media-frame .media-source > img),
+  .bento-tile :deep(.media-frame .media-source > .autoplay-video),
+  .bento-tile :deep(.media-frame .media-source > .autoplay-video > video) { height: auto; }
   .bento-tile :deep(.fullscreen-media),
   .bento-tile :deep(.media-source),
   .bento-tile :deep(.media-source > img),

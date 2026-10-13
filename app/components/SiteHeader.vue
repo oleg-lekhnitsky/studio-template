@@ -7,12 +7,10 @@ const navigation = ref<HTMLElement | null>(null)
 const identity = ref<{ $el: HTMLElement } | null>(null)
 const identityOverFooter = ref(false)
 const navigationStyle = ref<Record<string, string>>({})
-const navigationChanging = ref(false)
 const navigationOverFooter = ref(false)
 const nuxtApp = useNuxtApp()
 
 let frame = 0
-let removeTransitionStart: (() => void) | undefined
 let removeTransitionFinish: (() => void) | undefined
 
 function positionNavigation() {
@@ -51,12 +49,8 @@ onMounted(() => {
   positionNavigation()
   window.addEventListener('scroll', positionNavigation, { passive: true })
   window.addEventListener('resize', positionNavigation)
-  removeTransitionStart = nuxtApp.hook('page:start', () => {
-    navigationChanging.value = true
-  })
   removeTransitionFinish = nuxtApp.hook('page:transition:finish', () => {
     positionNavigation()
-    requestAnimationFrame(() => { navigationChanging.value = false })
   })
 })
 
@@ -64,7 +58,6 @@ onBeforeUnmount(() => {
   cancelAnimationFrame(frame)
   window.removeEventListener('scroll', positionNavigation)
   window.removeEventListener('resize', positionNavigation)
-  removeTransitionStart?.()
   removeTransitionFinish?.()
 })
 </script>
@@ -84,7 +77,6 @@ onBeforeUnmount(() => {
       <span class="mobile-identity">mmaze.studio</span>
     </NuxtLink>
     <div ref="navigation" :class="['header-navigation', {
-      changing: navigationChanging,
       'over-footer': navigationOverFooter
     }]" :style="navigationStyle">
       <SiteNavigation :settings="settings" />
@@ -111,13 +103,9 @@ onBeforeUnmount(() => {
   bottom: var(--space);
   left: var(--space);
   width: calc(clamp(220px, 22vw, 360px) - var(--space) * 2);
-  transition:
-    color 120ms ease-out,
-    opacity 720ms cubic-bezier(0.16, 1.35, 0.3, 1),
-    transform 760ms cubic-bezier(0.16, 1.35, 0.3, 1);
+  transition: color 120ms ease-out;
 }
 
-.header-navigation.changing { opacity: 0; transform: translateY(20px); }
 .header-navigation.over-footer { color: #000; }
 
 .header-identity-link {

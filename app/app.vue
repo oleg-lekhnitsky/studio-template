@@ -7,7 +7,6 @@ const runtimeConfig = useRuntimeConfig()
 const routeIsCasesIndex = () => route.path === '/projects' || route.path === '/projects/'
 const isCasesIndex = ref(routeIsCasesIndex())
 const { data: siteSettings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
-const imageUrl = useSanityImage()
 
 function syncShellToRoute() {
   isCasesIndex.value = routeIsCasesIndex()
@@ -15,7 +14,7 @@ function syncShellToRoute() {
 
 const title = computed(() => siteSettings.value?.seoTitle || 'mmaze.studio — Independent creative studio')
 const description = computed(() => siteSettings.value?.seoDescription || 'Independent creative studio portfolio.')
-const socialImage = computed(() => imageUrl(siteSettings.value?.ogImage, 1200) || undefined)
+const socialImage = computed(() => new URL('/ogimage.png', runtimeConfig.public.siteUrl || requestUrl.origin).toString())
 const canonicalUrl = computed(() => new URL(route.path, runtimeConfig.public.siteUrl || requestUrl.origin).toString())
 
 useSeoMeta({

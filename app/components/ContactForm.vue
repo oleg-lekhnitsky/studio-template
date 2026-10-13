@@ -9,5 +9,7 @@ defineProps<{ fields?: FormField[] }>()
     context="General contact enquiry"
     success-message="Thank you. We’ll be in touch."
     :fields="fields"
+    appearance="contact"
+    submit-label="Send"
   />
 </template>
