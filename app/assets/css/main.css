@@ -172,9 +172,9 @@ textarea {
 
 .primary-button--dark,
 .primary-button--dark:hover {
-  color: #fff;
-  background: #141414;
-  border-color: #141414;
+  color: var(--button-foreground);
+  background: var(--button-background);
+  border-color: var(--button-background);
 }
 
 .sr-only {
