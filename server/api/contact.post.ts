@@ -46,17 +46,26 @@ export default defineEventHandler(async (event) => {
     if (value && type === 'url' && (value.length > 500 || !/^https?:\/\//i.test(value))) {
       throw createError({ statusCode: 400, statusMessage: 'Enter a valid URL' })
     }
-    return { label, value }
+    return { type, value }
   })
 
   await enforceRateLimit(event, 'contact')
+
+  const escapeHtml = (value: string) => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+  const message = [
+    `<b>${escapeHtml(context)}</b>`,
+    ...fields.map(field => field.type === 'textarea'
+      ? `<pre>${escapeHtml(field.value || '—')}</pre>`
+      : escapeHtml(field.value || '—'))
+  ].join('\n\n')
 
   try {
     await $fetch(`https://api.telegram.org/bot${config.telegramBotToken}/sendMessage`, {
       method: 'POST',
       body: {
         chat_id: config.telegramChatId,
-        text: `${context}\n\n${fields.map(field => `${field.label}: ${field.value || '—'}`).join('\n\n')}`
+        text: message,
+        parse_mode: 'HTML'
       }
     })
   } catch {
