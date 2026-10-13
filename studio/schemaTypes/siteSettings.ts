@@ -433,7 +433,7 @@ export default defineType({
         }
       }]
     }),
-    defineField({ name: 'jobsHeadline', title: 'Jobs page headline', type: 'string', group: 'jobs', initialValue: 'Work with us.' }),
+    defineField({ name: 'jobsHeadline', title: 'Jobs page headline', type: 'string', group: 'jobs', initialValue: 'Work with us' }),
     defineField({ name: 'jobsIntroduction', title: 'Jobs page introduction', type: 'text', group: 'jobs', rows: 4 })
   ],
   preview: { prepare: () => ({ title: 'Site settings' }) }

@@ -11,7 +11,7 @@ usePageSeo(() => settings.value?.jobsSeo, 'Crew — mmaze.studio', 'Open roles a
   <PageFrame>
     <main class="page jobs-page">
       <header>
-        <h1 class="display">{{ settings?.jobsHeadline || 'Work with us.' }}</h1>
+        <h1 class="display">{{ settings?.jobsHeadline || 'Work with us' }}</h1>
         <p v-if="settings?.jobsIntroduction" class="medium">{{ settings.jobsIntroduction }}</p>
       </header>
       <section v-if="jobs?.length" class="jobs-list" aria-label="Open positions">
