@@ -11,5 +11,6 @@ defineProps<{ jobTitle: string; fields?: FormField[] }>()
     submit-label="Apply"
     show-portfolio
     :fields="fields"
+    appearance="contact"
   />
 </template>

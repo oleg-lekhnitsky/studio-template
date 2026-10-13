@@ -27,7 +27,9 @@ function fieldName(field: FormField) {
 
 function placeholder(field: FormField) {
   if (props.appearance !== 'contact') return field.placeholder
-  const text = field.placeholder || (field.type === 'textarea' ? 'A few words about what you need' : field.label)
+  const text = field.placeholder || (field.type === 'textarea'
+    ? props.showPortfolio ? 'Tell us a little about yourself' : 'A few words about what you need'
+    : field.label)
   return `${text}${field.required ? '*' : ''}`
 }
 

@@ -31,7 +31,9 @@ useSeoMeta({
         </div>
       </header>
       <div class="job-content">
-        <SanityContent v-if="job.description" class="medium description" :value="job.description" />
+        <div v-if="job.description" class="medium description">
+          <SanityContent :value="job.description" />
+        </div>
         <section class="application">
           <h2 class="medium">Apply for {{ job.title }}</h2>
           <JobApplicationForm :job-title="job.title" :fields="settings?.jobFormFields" />
@@ -51,12 +53,15 @@ useSeoMeta({
   padding: var(--space) var(--space) 0;
 }
 .job-head, .job-content { grid-column: 1; }
-.job-head, .job-content { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }
+.job-head, .job-content { display: grid; grid-template-columns: 1fr; }
+.job-head { gap: var(--space); }
+.job-content { gap: calc(var(--space) * 3); }
 h1, h2 { margin: 0; font-weight: inherit; }
-.meta { display: flex; flex-wrap: wrap; gap: calc(var(--space) / 2) var(--space); margin-bottom: var(--space); }
+.meta { display: flex; flex-wrap: wrap; gap: calc(var(--space) / 2) var(--space); }
 .meta span::before { content: '•'; margin-right: calc(var(--space) / 2); font-weight: 900; }
-.description { font-size: var(--medium); }
-.job-content :deep(p) { margin: 0; padding: 0; }
+.description { font-size: var(--medium); line-height: 1.2; }
+.description :deep(> *) { margin: 0; }
+.description :deep(> * + *) { margin-top: var(--space); }
 .application { display: grid; gap: calc(var(--space) * 2); }
 @media (max-width: 720px) {
   .job-page { grid-template-columns: 1fr; }

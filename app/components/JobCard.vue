@@ -14,7 +14,14 @@ defineProps<{ job: JobPreview }>()
 </template>
 
 <style scoped>
-.job-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space); padding-block: var(--space); border-top: 1px solid color-mix(in srgb, currentColor 30%, transparent); }
+.job-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space);
+  padding: calc(var(--space) * 2);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--background));
+}
 h2 { margin: 0; }
 .meta { display: flex; justify-content: space-between; gap: var(--space); }
 @media (max-width: 720px) { .job-card { grid-template-columns: 1fr; } }

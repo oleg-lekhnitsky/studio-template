@@ -33,6 +33,7 @@ usePageSeo(() => settings.value?.jobsSeo, 'Crew — mmaze.studio', 'Open roles a
 }
 header { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space); }
 .jobs-list, .empty-state { grid-column: 1; }
+.jobs-list { display: grid; gap: var(--space); }
 h1, p { margin: 0; }
 @media (max-width: 720px) {
   .jobs-page, header { grid-template-columns: 1fr; }
