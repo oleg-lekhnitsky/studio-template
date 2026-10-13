@@ -64,7 +64,7 @@ const headline = computed(() => settings.value?.heroHeadline || 'Ideas, identiti
 }
 
 .show-all {
-  align-self: center;
+  align-self: flex-start;
   margin-inline: var(--space);
 }
 
@@ -100,6 +100,7 @@ const headline = computed(() => settings.value?.heroHeadline || 'Ideas, identiti
   }
 
   .home-grid-toolbar { margin-inline: 16px; flex-wrap: wrap; }
+  .show-all { margin-inline: 16px; }
   .home-grid-toolbar h2 { font-size: 14px; }
 
   .home-grid {
