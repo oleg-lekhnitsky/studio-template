@@ -133,9 +133,11 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
 <template>
   <PageFrame>
     <main class="cases-index">
-      <header class="index-toolbar" :class="{ 'toolbar-hidden': !toolbarVisible }">
-        <section class="case-filter" aria-labelledby="case-filter-label">
-          <span id="case-filter-label">I want to see</span>
+      <header class="index-toolbar" :class="{ 'toolbar-hidden': !toolbarVisible }" :inert="!toolbarVisible">
+        <NuxtLink class="index-logo" to="/" :aria-label="`${settings?.headerText || 'Studio'} home`">
+          <HeaderIdentity image-url="/icon.gif" :text="settings?.headerText || 'Studio'" />
+        </NuxtLink>
+        <section class="case-filter" aria-label="Filter projects by category">
           <div class="filter-options">
             <button v-for="category in categories" :key="category" type="button"
               :class="{ active: selectedCategory === category }"
@@ -148,12 +150,6 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
             Showing {{ filteredItems.length }} {{ filteredItems.length === 1 ? 'case' : 'cases' }}.
           </p>
         </section>
-        <button class="close-index" type="button" aria-label="Close all cases and return to previous page"
-          @click="closeCases">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 5l14 14M19 5L5 19" />
-          </svg>
-        </button>
       </header>
       <section ref="masonry" class="masonry" :class="{ 'cards-hidden': !cardsVisible }"
         :style="{ '--masonry-columns': masonryColumnCount }">
@@ -173,6 +169,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
 }
 
 .index-toolbar {
+  min-height: clamp(48px, 5vw, 92px);
   position: sticky;
   z-index: 4;
   top: 0;
@@ -182,7 +179,8 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
   gap: var(--space);
   margin-top: calc(var(--space) * -1);
   padding-top: var(--space);
-  padding-bottom: var(--space);
+  padding-left: calc(clamp(48px, 5vw, 92px) + var(--space));
+  padding-bottom: 0;
   background: var(--background);
   transition:
     opacity 180ms ease-out,
@@ -193,6 +191,13 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
   opacity: 0;
   transform: translateY(calc(-100% - var(--space)));
   pointer-events: none;
+}
+
+.index-logo {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: calc(var(--space) * -1);
 }
 
 .case-filter {
@@ -281,10 +286,18 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
   to { opacity: 1; transform: translateY(0); }
 }
 
+@media (max-width: 720px) {
+  .index-toolbar {
+    min-height: calc(40px + var(--space) / 2);
+    padding-bottom: calc(var(--space) / 2);
+    padding-left: calc(40px + var(--space));
+  }
+}
+
 @media (max-width: 520px) {
   .index-toolbar {
     grid-template-columns: 1fr auto;
-    padding-bottom: calc(var(--space) * 2);
+    padding-bottom: var(--space);
   }
   .case-filter {
     grid-column: 1;

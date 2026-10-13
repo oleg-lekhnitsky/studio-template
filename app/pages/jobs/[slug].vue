@@ -25,8 +25,8 @@ useSeoMeta({
       <header class="job-head">
         <h1 class="display">{{ job.title }}</h1>
         <div class="meta">
-          <span>{{ job.location }}</span>
-          <span>{{ job.employmentType }}</span>
+          <span v-if="job.location">{{ job.location }}</span>
+          <span v-if="job.employmentType">{{ job.employmentType }}</span>
           <span v-if="job.closingDate">Apply by {{ job.closingDate }}</span>
         </div>
       </header>
@@ -54,11 +54,16 @@ useSeoMeta({
 }
 .job-head, .job-content { grid-column: 1; }
 .job-head, .job-content { display: grid; grid-template-columns: 1fr; }
-.job-head { gap: var(--space); }
+.job-head { gap: calc(var(--space) * 2); }
 .job-content { gap: calc(var(--space) * 3); }
 h1, h2 { margin: 0; font-weight: inherit; }
-.meta { display: flex; flex-wrap: wrap; gap: calc(var(--space) / 2) var(--space); }
-.meta span::before { content: '•'; margin-right: calc(var(--space) / 2); font-weight: 900; }
+.meta { display: flex; flex-wrap: wrap; gap: calc(var(--space) / 2); }
+.meta span {
+  padding: .45em .8em;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--foreground) 6%, var(--background));
+  line-height: 1.2;
+}
 .description { font-size: var(--medium); line-height: 1.2; }
 .description :deep(> *) { margin: 0; }
 .description :deep(> * + *) { margin-top: var(--space); }

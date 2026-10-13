@@ -36,7 +36,7 @@ const items = computed(() => {
   margin-top: calc(var(--space) * 4);
   padding-inline: var(--space);
 }
-h2 { margin: 0 0 calc(var(--space) * 2); font-weight: 500; }
+h2 { margin: 0 0 calc(var(--space) * 2); font-weight: 600; }
 .next-grid {
   display: grid;
   grid-auto-flow: column;
