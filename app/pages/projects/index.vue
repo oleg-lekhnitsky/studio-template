@@ -19,7 +19,7 @@ const selectedCategory = ref(categoryFromUrl())
 const displayedCategory = ref(selectedCategory.value)
 const cardsVisible = ref(true)
 const toolbarVisible = ref(true)
-const masonryColumnCount = ref(4)
+const masonryColumnCount = ref(3)
 const masonry = ref<HTMLElement | null>(null)
 const columnWidth = ref(300)
 const cardSpace = ref(12)
@@ -52,7 +52,7 @@ const masonryColumns = computed(() => {
 
 function syncMasonryColumns() {
   const width = window.innerWidth
-  masonryColumnCount.value = width <= 520 ? 1 : width <= 800 ? 2 : width <= 1100 ? 3 : 4
+  masonryColumnCount.value = width <= 520 ? 1 : width <= 800 ? 2 : 3
   if (masonry.value) {
     const style = getComputedStyle(masonry.value)
     cardSpace.value = Number.parseFloat(style.columnGap) || 12
