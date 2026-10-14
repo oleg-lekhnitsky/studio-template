@@ -32,6 +32,7 @@ useSeoMeta({
 })
 
 useHead({
+  htmlAttrs: { lang: 'en' },
   link: [{ rel: 'canonical', href: canonicalUrl }],
   script: [{
     type: 'application/ld+json',

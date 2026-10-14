@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 import { privacyPolicyDefaults } from './privacyPolicyDefaults'
+import { aboutPageDefaults } from './aboutPageDefaults'
 
 const pageSeo = (name: string, title: string) => defineField({
   name,
@@ -356,7 +357,7 @@ export default defineType({
       type: 'text',
       group: 'about',
       rows: 3,
-      initialValue: 'About the studio.'
+      initialValue: aboutPageDefaults.aboutHeadline
     }),
     defineField({
       name: 'aboutIntroduction',
@@ -364,14 +365,14 @@ export default defineType({
       type: 'text',
       group: 'about',
       rows: 5,
-      initialValue: 'We’re a young team of talented people who make production a great process with a clear result. We ask a lot of questions, care about the small stuff and stay curious about pretty much everything. From straightforward productions to the slightly weird ones, we like figuring out how to make things work — and making them really good.'
+      initialValue: aboutPageDefaults.aboutIntroduction
     }),
     defineField({
       name: 'aboutProcessTitle',
       title: 'Process heading',
       type: 'string',
       group: 'about',
-      initialValue: 'The Mmaze 5'
+      initialValue: aboutPageDefaults.aboutProcessTitle
     }),
     defineField({
       name: 'aboutProcessSteps',
@@ -380,7 +381,14 @@ export default defineType({
       type: 'array',
       of: [{ type: 'string', validation: rule => rule.required() }],
       group: 'about',
-      initialValue: ['Get the brief right', 'Get the right people', 'Map out the production', 'Polish before we share', 'Deliver what we promised']
+      initialValue: aboutPageDefaults.aboutProcessSteps
+    }),
+    defineField({
+      name: 'aboutServicesTitle',
+      title: 'Services heading',
+      type: 'string',
+      group: 'about',
+      initialValue: aboutPageDefaults.aboutServicesTitle
     }),
     defineField({
       name: 'aboutServices',
@@ -389,7 +397,7 @@ export default defineType({
       type: 'array',
       of: [{ type: 'string', validation: rule => rule.required() }],
       group: 'about',
-      initialValue: ['Video Production', 'Animation', 'Creative Concepts', 'AI-production', 'Design & Brand Identity', '3D & VFX', 'Remote Production']
+      initialValue: aboutPageDefaults.aboutServices
     }),
     defineField({
       name: 'aboutVideo',

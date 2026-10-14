@@ -115,6 +115,7 @@ export interface SiteSettings {
   aboutIntroduction?: string | null
   aboutProcessTitle?: string
   aboutProcessSteps?: string[] | null
+  aboutServicesTitle?: string
   aboutServices?: string[] | null
   aboutVideoUrl?: string
   aboutImage?: SanityImage

@@ -133,6 +133,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
 <template>
   <PageFrame>
     <main class="cases-index">
+      <h1 class="sr-only">Projects</h1>
       <header class="index-toolbar" :class="{ 'toolbar-hidden': !toolbarVisible }" :inert="!toolbarVisible">
         <NuxtLink class="index-logo" to="/" :aria-label="`${settings?.headerText || 'Studio'} home`">
           <HeaderIdentity image-url="/icon.gif" :text="settings?.headerText || 'Studio'" />

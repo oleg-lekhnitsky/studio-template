@@ -58,6 +58,7 @@ export const siteSettingsQuery = groq`*[_type == "siteSettings" && _id == "${sit
   aboutIntroduction,
   aboutProcessTitle,
   aboutProcessSteps,
+  aboutServicesTitle,
   aboutServices,
   "aboutVideoUrl": aboutVideo.asset->url,
   aboutImage,
