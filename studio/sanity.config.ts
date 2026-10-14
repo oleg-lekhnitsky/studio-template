@@ -10,8 +10,6 @@ const isLocalStudio = process.env.NODE_ENV === 'development'
 const localPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:3000'
 const productionPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL_PRODUCTION
   || (isLocalStudio ? localPreviewUrl : 'https://studio-template-studio-ly5d.vercel.app')
-const versionTwoPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL_VERSION_TWO
-  || (isLocalStudio ? localPreviewUrl : 'https://yuliana-two.vercel.app')
 
 const mainDocuments = defineDocuments([
   {
@@ -124,12 +122,5 @@ export default defineConfig([
     basePath: '/production',
     dataset: 'production',
     previewUrl: productionPreviewUrl
-  }),
-  workspace({
-    name: 'version-two',
-    title: 'Portfolio — Version Two',
-    basePath: '/version-two',
-    dataset: 'version-two',
-    previewUrl: versionTwoPreviewUrl
   })
 ])
