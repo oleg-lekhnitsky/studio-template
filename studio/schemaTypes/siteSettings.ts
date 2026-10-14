@@ -271,32 +271,21 @@ export default defineType({
     formFields('contactFormFields', 'Contact form fields', 'contact', contactFormFields),
     formFields('jobFormFields', 'Job application form fields', 'jobs', jobFormFields),
     defineField({
-      name: 'contactHeading',
-      title: 'Contact page heading',
-      description: 'Large heading shown above the contact form. Text can include links.',
-      type: 'array',
+      name: 'contactEmailHeading',
+      title: 'Direct email heading',
+      description: 'Heading above the email link below the contact form.',
+      type: 'string',
       group: 'contact',
-      of: [{
-        type: 'block',
-        styles: [{ title: 'Heading', value: 'h1' }],
-        lists: [],
-        marks: {
-          decorators: [],
-          annotations: [{
-            name: 'link',
-            title: 'Link',
-            type: 'object',
-            fields: [
-              defineField({
-                name: 'href',
-                title: 'URL',
-                type: 'url',
-                validation: rule => rule.required().uri({ allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel'] })
-              })
-            ]
-          }]
-        }
-      }]
+      initialValue: 'Or email us directly'
+    }),
+    defineField({
+      name: 'contactEmail',
+      title: 'Contact email address',
+      description: 'Email address shown below the contact form and used for privacy requests. Enter the address without mailto:.',
+      type: 'string',
+      group: 'contact',
+      initialValue: 'hello@mmaze.studio',
+      validation: rule => rule.email()
     }),
     defineField({
       name: 'socialLinks',

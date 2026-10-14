@@ -6,6 +6,8 @@ const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
 if (settings.value?.disableContact) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 usePageSeo(() => settings.value?.contactSeo, 'Contact — mmaze.studio', 'Start a project with our creative studio.')
 const contactEmail = computed(() => {
+  const address = stegaClean(settings.value?.contactEmail || '').trim()
+  if (address) return address
   const link = settings.value?.socialLinks?.find(link => stegaClean(link.url).startsWith('mailto:'))
   return link ? stegaClean(link.url).slice(7).split('?')[0] : 'hello@mmaze.studio'
 })
@@ -19,7 +21,7 @@ const contactEmail = computed(() => {
         <ContactForm :fields="settings?.contactFormFields" />
       </div>
       <section class="contact-email display" aria-labelledby="contact-email-title">
-        <h2 id="contact-email-title">Or email us directly</h2>
+        <h2 id="contact-email-title">{{ settings?.contactEmailHeading || 'Or email us directly' }}</h2>
         <a :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
       </section>
     </main>

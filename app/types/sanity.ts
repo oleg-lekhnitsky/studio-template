@@ -97,7 +97,8 @@ export interface SiteSettings {
   jobsSeo?: PageSeo
   aboutSeo?: PageSeo
   contactSeo?: PageSeo
-  contactHeading?: TypedObject[]
+  contactEmailHeading?: string
+  contactEmail?: string
   privacyPolicy?: {
     title?: string
     updatedAt?: string

@@ -13,6 +13,8 @@ const updatedAt = computed(() => {
   }).format(date)
 })
 const contactEmail = computed(() => {
+  const address = stegaClean(settings.value?.contactEmail || '').trim()
+  if (address) return address
   const link = settings.value?.socialLinks?.find(link => stegaClean(link.url).startsWith('mailto:'))
   return link ? stegaClean(link.url).slice(7).split('?')[0] : 'hello@mmaze.studio'
 })
