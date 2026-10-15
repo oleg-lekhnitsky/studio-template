@@ -34,6 +34,7 @@ function getVimeoEmbedUrl(source: string) {
     embed.searchParams.set('muted', '1')
     embed.searchParams.set('autopause', '0')
     embed.searchParams.set('playsinline', '1')
+    embed.searchParams.set('transparent', '0')
     embed.searchParams.set('controls', props.background ? '0' : '1')
 
     return embed.toString()
@@ -58,7 +59,7 @@ const embedUrl = computed(() => getVimeoEmbedUrl(props.src))
   position: relative;
   width: 100%;
   overflow: hidden;
-  background: #141414;
+  background: var(--background);
 }
 
 .vimeo-player.is-inline {
@@ -72,5 +73,6 @@ iframe {
   width: 100%;
   height: 100%;
   border: 0;
+  background: var(--background);
 }
 </style>
