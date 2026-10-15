@@ -288,16 +288,30 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
 }
 
 @media (max-width: 720px) {
+  .index-logo :deep(.image-logo) {
+    display: block;
+    width: 40px;
+    height: 40px;
+  }
+
   .index-toolbar {
     min-height: calc(40px + var(--space) / 2);
+    grid-template-columns: 1fr;
     padding-bottom: calc(var(--space) / 2);
-    padding-left: calc(40px + var(--space));
+    padding-left: 0;
   }
+  .index-logo {
+    position: static;
+    justify-self: start;
+    margin-left: calc(var(--space) * -.75);
+    margin-top: calc(var(--space) * -.75);
+  }
+  .case-filter { grid-column: 1; }
 }
 
 @media (max-width: 520px) {
   .index-toolbar {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
     padding-bottom: var(--space);
   }
   .case-filter {
