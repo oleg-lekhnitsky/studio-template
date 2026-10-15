@@ -126,6 +126,7 @@ h1 {
 }
 
 p {
+  max-width: 85%;
   font-size: var(--small);
   font-weight: 600;
   line-height: 1.4;

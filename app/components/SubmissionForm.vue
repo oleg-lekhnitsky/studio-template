@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<{
   fields?: FormField[]
   appearance?: 'default' | 'contact'
 }>(), { submitLabel: 'Send message', showPortfolio: false })
+const emit = defineEmits<{ success: [message: string] }>()
 
 const defaultFields = computed<FormField[]>(() => [
   { _key: 'name', label: 'Name', type: 'text', required: true },
@@ -86,7 +87,7 @@ function submitFromTextarea(event: KeyboardEvent) {
 
 async function submit(event: Event) {
   const form = event.currentTarget as HTMLFormElement
-  if (sending.value) return
+  if (sending.value || sent.value) return
   if (!form.checkValidity()) {
     await nextTick()
     form.querySelector<HTMLInputElement | HTMLTextAreaElement>('[aria-invalid="true"]')?.focus()
@@ -112,8 +113,8 @@ async function submit(event: Event) {
       }
     })
     sent.value = true
-    form.reset()
     status.value = props.successMessage
+    emit('success', props.successMessage)
   } catch (cause) {
     const failure = cause as { status?: number; statusCode?: number; data?: { statusCode?: number } }
     const code = failure.status || failure.statusCode || failure.data?.statusCode
@@ -133,7 +134,7 @@ async function submit(event: Event) {
 <template>
   <p class="sr-only" role="status">{{ status }}</p>
   <div class="submission-form" :class="{ 'submission-form--contact': appearance === 'contact' }">
-    <form novalidate :class="{ 'is-sent': sent }" :aria-hidden="sent" :inert="sent" :aria-busy="sending"
+    <form novalidate :class="{ 'is-sent': sent }" :aria-busy="sending"
       @submit.prevent="submit" @invalid.capture="markInvalid" @input.capture="clearInvalid" @animationend="finishShake">
       <p class="form-note">{{ allFieldsRequired ? 'All fields are required.' : 'Required fields are marked *.' }}</p>
       <label class="website" inert>
@@ -158,9 +159,11 @@ async function submit(event: Event) {
       </label>
       <div class="form-actions">
         <button class="primary-button primary-button--left"
-          :class="{ 'primary-button--dark': appearance === 'contact' }" type="submit" :disabled="sending">
+          :class="{ 'primary-button--dark': appearance === 'contact', 'primary-button--sent': sent }" type="submit" :disabled="sending || sent">
           <span v-if="sending" class="spinner" aria-hidden="true" />
-          <span>{{ submitLabel }}</span>
+          <Transition name="submit-label" mode="out-in">
+            <span :key="sent ? 'sent' : 'send'">{{ sent ? 'Sent' : submitLabel }}</span>
+          </Transition>
           <span v-if="sending" class="sr-only">— sending</span>
         </button>
         <p class="privacy-note">
@@ -170,15 +173,13 @@ async function submit(event: Event) {
       </div>
       <p v-if="error" :key="errorAttempt" class="t-input is-shaking" role="alert">{{ error }}</p>
     </form>
-    <p v-if="sent" class="success display">{{ successMessage }}</p>
+    <p v-if="sent && showPortfolio" class="display">{{ successMessage }}</p>
   </div>
 </template>
 
 <style scoped>
 .submission-form { position: relative; }
 form { display: grid; gap: var(--space); align-content: start; }
-form.is-sent { visibility: hidden; }
-.success { position: absolute; inset: 0; }
 label { display: grid; gap: 8px; }
 input, textarea { width: 100%; border: 0; border-bottom: 1px solid color-mix(in srgb, currentColor 30%, transparent); border-radius: 0; padding: 10px 0; background: transparent; }
 input:focus-visible, textarea:focus-visible {
@@ -187,6 +188,16 @@ input:focus-visible, textarea:focus-visible {
 }
 textarea { resize: vertical; }
 .primary-button { justify-self: start; }
+.primary-button.primary-button--sent {
+  background: var(--accent);
+  color: var(--foreground);
+  border-color: var(--accent);
+  cursor: default;
+  opacity: 1;
+}
+.submit-label-enter-active, .submit-label-leave-active { transition: opacity 160ms ease, transform 160ms ease; }
+.submit-label-enter-from { opacity: 0; transform: translateY(4px); }
+.submit-label-leave-to { opacity: 0; transform: translateY(-4px); }
 .form-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space); align-items: start; }
 .form-note, .privacy-note { opacity: var(--opacity-secondary); }
 .privacy-note a { text-decoration: underline; text-underline-offset: .15em; }
@@ -241,6 +252,7 @@ textarea[aria-invalid='true'] {
 @keyframes spin { to { transform: rotate(1turn); } }
 
 @media (prefers-reduced-motion: reduce) {
+  .submit-label-enter-active, .submit-label-leave-active { transition: none; }
   .spinner { animation: none; border-right-color: currentColor; opacity: .5; }
 }
 

@@ -2,6 +2,7 @@
 import type { FormField } from '~/types/sanity'
 
 defineProps<{ fields?: FormField[] }>()
+const emit = defineEmits<{ success: [message: string] }>()
 </script>
 
 <template>
@@ -11,5 +12,6 @@ defineProps<{ fields?: FormField[] }>()
     :fields="fields"
     appearance="contact"
     submit-label="Send"
+    @success="emit('success', $event)"
   />
 </template>
