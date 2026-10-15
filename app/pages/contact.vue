@@ -56,7 +56,7 @@ const contactEmail = computed(() => {
 .contact {
   position: relative;
   width: 100%;
-  min-height: calc(100svh - var(--space) * 4);
+  min-height: calc(100svh - var(--space) * 1);
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: auto auto 1fr;
