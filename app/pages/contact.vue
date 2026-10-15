@@ -4,6 +4,20 @@ import { stegaClean } from '@sanity/client/stega'
 
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
 const successMessage = ref('')
+const localTime = ref('')
+let clockInterval: ReturnType<typeof setInterval> | undefined
+const clockFormatter = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Etc/GMT-2',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23'
+})
+onMounted(() => {
+  const updateClock = () => { localTime.value = clockFormatter.format(new Date()) }
+  updateClock()
+  clockInterval = setInterval(updateClock, 1000)
+})
+onBeforeUnmount(() => clearInterval(clockInterval))
 if (settings.value?.disableContact) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 usePageSeo(() => settings.value?.contactSeo, 'Contact — mmaze.studio', 'Start a project with our creative studio.')
 const contactEmail = computed(() => {
@@ -17,6 +31,10 @@ const contactEmail = computed(() => {
 <template>
   <PageFrame>
     <main class="page contact">
+      <section class="contact-time" aria-label="Current time in GMT+2">
+        <time>{{ localTime || '––:––' }}</time>
+        <span>(GMT+2)</span>
+      </section>
       <h1 class="display">
         <Transition name="contact-heading" mode="out-in">
           <span v-if="successMessage" key="success">{{ successMessage }}</span>
@@ -36,6 +54,7 @@ const contactEmail = computed(() => {
 
 <style scoped>
 .contact {
+  position: relative;
   width: 100%;
   min-height: calc(100svh - var(--space) * 4);
   display: grid;
@@ -43,6 +62,18 @@ const contactEmail = computed(() => {
   grid-template-rows: auto auto 1fr;
   gap: 0 var(--space);
   padding: var(--space) var(--space) 0;
+}
+
+.contact-time {
+  position: absolute;
+  top: var(--space);
+  right: var(--space);
+  display: flex;
+  align-items: center;
+  gap: .5em;
+  font-size: var(--small);
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 h1,
@@ -77,7 +108,7 @@ h1 > span { display: block; }
 
 .contact-email {
   align-self: end;
-  margin-top: clamp(48px, 5vw, 96px);
+  margin-top: clamp(64px, 5vw, 96px);
 }
 .contact-email h2 { margin: 0 0 .12em; font: inherit; }
 .contact-email a {
@@ -90,7 +121,15 @@ h1 > span { display: block; }
 .contact-email a:hover { color: var(--foreground); opacity: 1; }
 
 @media (max-width: 720px) {
-  .contact { grid-template-columns: 1fr; min-height: 0; }
+  .contact { grid-template-columns: 1fr; min-height: 0; padding-top: 0; }
+  .contact-time {
+    position: static;
+    font-size: var(--medium);
+    grid-column: 1;
+    min-height: clamp(280px, 72vw, 520px);
+    padding: 0 16px 32px;
+    justify-content: center;
+  }
 }
 
 </style>
