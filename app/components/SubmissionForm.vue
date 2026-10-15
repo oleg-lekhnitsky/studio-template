@@ -188,16 +188,15 @@ form.is-sent { visibility: hidden; }
   inset: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: clamp(24px, 4cqw, 64px);
   border-radius: var(--radius);
-  background: var(--accent);
-  color: #141414;
+  color: var(--foreground);
   font-size: var(--medium);
   letter-spacing: var(--letter-spacing-medium);
   font-weight: 600;
   line-height: 1.2;
-  text-align: center;
+  text-align: left;
 }
 .form-success > p {
   transform: translateY(-0.06em);
