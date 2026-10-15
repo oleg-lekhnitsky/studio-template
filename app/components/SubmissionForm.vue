@@ -189,7 +189,7 @@ form.is-sent { visibility: hidden; }
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: clamp(24px, 4cqw, 64px);
+  padding: 0;
   border-radius: var(--radius);
   color: var(--foreground);
   font-size: var(--medium);
