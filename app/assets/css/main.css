@@ -36,7 +36,7 @@
   --font-family: 'Inter Tight', sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1;
   --space: clamp(12px, 1vw, 24px);
-  --small: clamp(13px, .75vw, 20px);
+  --small: clamp(13px, 1.0vw, 20px);
   --medium: clamp(24px, 3vw, 32px);
   --large: clamp(32px, 3.5vw, 72px);
   --letter-spacing: 0em;
@@ -90,7 +90,7 @@ body {
   font-family: var(--font-family);
   font-size: var(--small);
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.3;
   letter-spacing: var(--letter-spacing);
   
 }
