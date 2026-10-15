@@ -15,7 +15,7 @@ export default defineType({
       name: 'url',
       title: 'External video URL',
       type: 'url',
-      description: 'Paste a Vimeo page URL, for example https://vimeo.com/1127174952.'
+      description: 'Paste a YouTube or Vimeo video link. YouTube videos appear as a 16:9 player. Leave the uploaded file empty to use this link.'
     }),
     defineField({ name: 'poster', type: 'image' }),
     defineField({

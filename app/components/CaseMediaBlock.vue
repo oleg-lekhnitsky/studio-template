@@ -12,6 +12,7 @@ const videoSource = computed(() => props.block._type === 'video'
   ? stegaClean(props.block.fileUrl || props.block.url || '')
   : '')
 const isVimeoVideo = computed(() => /(?:player\.)?vimeo\.com/i.test(videoSource.value))
+const youtubeUrl = computed(() => youtubeEmbedUrl(videoSource.value))
 const mediaAspectRatio = computed(() => {
   if (props.block._type !== 'galleryImage' && props.block._type !== 'video') return undefined
   const ratio = stegaClean(props.block.aspectRatio)
@@ -37,6 +38,7 @@ const mediaAspectRatio = computed(() => {
           style="position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;border-radius:0;object-fit:contain" />
       </template>
     </FullscreenMedia>
+    <YoutubePlayer v-else-if="block._type === 'video' && youtubeUrl" :src="youtubeUrl" />
     <FullscreenMedia v-else-if="block._type === 'video' && isVimeoVideo" label="Open Vimeo video fullscreen">
       <VimeoPlayer :src="videoSource" :aspect-ratio="block.aspectRatio" background />
       <template #fullscreen>
