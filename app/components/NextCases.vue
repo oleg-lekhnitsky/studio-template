@@ -38,8 +38,6 @@ const items = computed(() => {
 }
 h2 { margin: 0 0 calc(var(--space) * 2); font-weight: 600; }
 .next-grid {
-  border-top-left-radius: var(--radius);
-  border-top-right-radius: var(--radius);
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(260px, 30%);
