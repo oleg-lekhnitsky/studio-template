@@ -3,7 +3,6 @@ import type { SiteSettings } from '~/types/sanity'
 import { stegaClean } from '@sanity/client/stega'
 
 const { data: settings } = await useSanityQuery<SiteSettings>(siteSettingsQuery)
-const successMessage = ref('')
 const localTime = ref('')
 let clockInterval: ReturnType<typeof setInterval> | undefined
 const clockFormatter = new Intl.DateTimeFormat('en-GB', {
@@ -35,14 +34,9 @@ const contactEmail = computed(() => {
         <time>{{ localTime || '––:––' }}</time>
         <span>(GMT+2)</span>
       </section>
-      <h1 class="display">
-        <Transition name="contact-heading" mode="out-in">
-          <span v-if="successMessage" key="success">{{ successMessage }}</span>
-          <span v-else key="initial">Tell us about your<br>project</span>
-        </Transition>
-      </h1>
+      <h1 class="display">Tell us about your<br>project</h1>
       <div class="contact-form">
-        <ContactForm :fields="settings?.contactFormFields" @success="successMessage = $event" />
+        <ContactForm :fields="settings?.contactFormFields" />
       </div>
       <section class="contact-email display" aria-labelledby="contact-email-title">
         <h2 id="contact-email-title">{{ settings?.contactEmailHeading || 'Or email us directly' }}</h2>
@@ -95,15 +89,6 @@ h1,
 h1 {
   margin: 0;
   font-weight: inherit;
-}
-h1 > span { display: block; }
-.contact-heading-enter-active, .contact-heading-leave-active {
-  transition: opacity 200ms ease, transform 200ms ease;
-}
-.contact-heading-enter-from { opacity: 0; transform: translateY(8px); }
-.contact-heading-leave-to { opacity: 0; transform: translateY(-8px); }
-@media (prefers-reduced-motion: reduce) {
-  .contact-heading-enter-active, .contact-heading-leave-active { transition: none; }
 }
 
 .contact-email {

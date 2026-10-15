@@ -194,6 +194,7 @@ form.is-sent { visibility: hidden; }
   background: var(--accent);
   color: #141414;
   font-size: var(--medium);
+  letter-spacing: var(--letter-spacing-medium);
   font-weight: 600;
   line-height: 1.2;
   text-align: center;
