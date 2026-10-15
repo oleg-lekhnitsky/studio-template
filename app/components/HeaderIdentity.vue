@@ -98,7 +98,7 @@ const maskStyle = computed(() => props.svgUrl
 .lottie-logo :deep(svg) { display: block; }
 
 @media (max-width: 720px) {
-  .image-logo { width: 40px; height: 40px; }
+  .image-logo { display: none; }
   .svg-logo,
   .lottie-logo { height: 28px; }
 }

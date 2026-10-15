@@ -122,8 +122,7 @@ const mediaAspectRatio = computed(() => {
   }
   .text-block {
     grid-template-columns: 1fr;
-    padding-top: calc(var(--space) * 5);
-    padding-bottom: calc(var(--space) * 2);
+    padding-block: calc(var(--space) * 5);
   }
 }
 

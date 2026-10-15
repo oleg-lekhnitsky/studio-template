@@ -99,7 +99,7 @@ const services = computed(() => settings.value?.aboutServices ?? [])
   .about-section { margin-top: 96px; }
   .about-introduction {
     margin-top: calc(var(--space) * 7);
-    font-size: var(--small);
+    font-size: calc(var(--small)*1.625);
     line-height: 1.25;
   }
   .about-introduction + .about-section { margin-top: calc(var(--space) * 7); }
