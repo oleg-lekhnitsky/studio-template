@@ -7,7 +7,7 @@ defineProps<{ jobTitle: string; fields?: FormField[] }>()
 <template>
   <SubmissionForm
     :context="`Job application — ${jobTitle}`"
-    success-message="Thank you for applying. We’ll be in touch."
+    success-message="Thank you for applying. We’ll be in touch."
     submit-label="Apply"
     show-portfolio
     :fields="fields"
