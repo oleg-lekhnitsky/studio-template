@@ -199,6 +199,9 @@ form.is-sent { visibility: hidden; }
   line-height: 1.2;
   text-align: center;
 }
+.form-success > p {
+  transform: translateY(-0.06em);
+}
 .t-panel-slide {
   transform: translateY(var(--panel-translate-y));
   opacity: 0;
