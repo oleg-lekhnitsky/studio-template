@@ -156,7 +156,7 @@ onBeforeUnmount(() => {
   }
 
   .desktop-identity { display: none; }
-  .mobile-identity { display: block; font-weight: 700; letter-spacing: -.04em; }
+  .mobile-identity { display: block; font-weight: 700; letter-spacing: 0.0em; }
 
 }
 </style>
