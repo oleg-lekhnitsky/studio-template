@@ -180,16 +180,15 @@ p {
 }
 
 @media (max-width: 720px) {
+  .case-page { gap: 0; }
   .case-head {
     display: contents;
   }
 
   .case-identity {
-    order: -3;
-    min-height: clamp(280px, 80vw, 520px);
-    align-content: center;
-    padding: calc(var(--space) * 4) var(--space);
-    text-align: center;
+    order: -1;
+    margin-top: clamp(48px, 16vw, 112px);
+    padding-inline: var(--space);
   }
 
   .case-identity h1 {
@@ -198,11 +197,16 @@ p {
     text-wrap: balance;
   }
 
-  .lead-media { order: -2; }
+  .lead-media {
+    order: -2;
+    margin-top: clamp(100px, 28vw, 200px);
+    padding-bottom: 0;
+  }
+  .lead-media :deep(> :last-child) { margin-bottom: 0; }
 
   .case-introduction {
     order: -1;
-    margin: calc(var(--space) * 3) var(--space);
+    margin: clamp(32px, 10vw, 72px) var(--space) clamp(48px, 16vw, 112px);
     opacity: var(--opacity-muted);
   }
 

@@ -134,7 +134,7 @@ async function submit(event: Event) {
 <template>
   <p class="sr-only" role="status">{{ status }}</p>
   <div class="submission-form" :class="{ 'submission-form--contact': appearance === 'contact' }">
-    <form novalidate :class="{ 'is-sent': sent }" :aria-busy="sending"
+    <form novalidate :class="{ 'is-sent': sent }" :aria-hidden="sent || undefined" :inert="sent" :aria-busy="sending"
       @submit.prevent="submit" @invalid.capture="markInvalid" @input.capture="clearInvalid" @animationend="finishShake">
       <p class="form-note">{{ allFieldsRequired ? 'All fields are required.' : 'Required fields are marked *.' }}</p>
       <label class="website" inert>
@@ -173,13 +173,56 @@ async function submit(event: Event) {
       </div>
       <p v-if="error" :key="errorAttempt" class="t-input is-shaking" role="alert">{{ error }}</p>
     </form>
-    <p v-if="sent && showPortfolio" class="display">{{ successMessage }}</p>
+      <div class="form-success t-panel-slide" :data-open="sent" :aria-hidden="!sent" :inert="!sent">
+        <p>{{ successMessage }}</p>
+      </div>
   </div>
 </template>
 
 <style scoped>
-.submission-form { position: relative; }
+.submission-form { position: relative; --panel-translate-y: 12px; }
 form { display: grid; gap: var(--space); align-content: start; }
+form.is-sent { visibility: hidden; }
+.form-success {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 4cqw, 64px);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #141414;
+  font-size: var(--medium);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+.t-panel-slide {
+  transform: translateY(var(--panel-translate-y));
+  opacity: 0;
+  filter: blur(var(--panel-blur));
+  pointer-events: none;
+  transition:
+    transform var(--panel-close-dur) var(--panel-ease),
+    opacity   var(--panel-close-dur) var(--panel-ease),
+    filter    var(--panel-close-dur) var(--panel-ease);
+  will-change: transform, opacity, filter;
+}
+.t-panel-slide[data-open="true"] {
+  transform: translateY(0);
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+  transition:
+    transform var(--panel-open-dur) var(--panel-ease),
+    opacity   var(--panel-open-dur) var(--panel-ease),
+    filter    var(--panel-open-dur) var(--panel-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-panel-slide { transition: none !important; }
+}
 label { display: grid; gap: 8px; }
 input, textarea { width: 100%; border: 0; border-bottom: 1px solid color-mix(in srgb, currentColor 30%, transparent); border-radius: 0; padding: 10px 0; background: transparent; }
 input:focus-visible, textarea:focus-visible {

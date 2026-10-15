@@ -33,6 +33,11 @@
 }
 
 :root {
+  --panel-open-dur: 400ms;
+  --panel-close-dur: 350ms;
+  --panel-translate-y: 100px;
+  --panel-blur: 2px;
+  --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --font-family: 'Inter Tight', sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1;
   --space: clamp(12px, 1vw, 24px);
