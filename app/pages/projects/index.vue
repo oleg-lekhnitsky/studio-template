@@ -319,6 +319,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
   .index-toolbar {
     grid-template-columns: 1fr;
     padding-bottom: calc(var(--space) * 2);
+    gap: calc(var(--space) * 2);
   }
   .case-filter {
     grid-column: 1;
