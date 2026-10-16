@@ -136,7 +136,8 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
       <h1 class="sr-only">Projects</h1>
       <header class="index-toolbar" :class="{ 'toolbar-hidden': !toolbarVisible }" :inert="!toolbarVisible">
         <NuxtLink class="index-logo" to="/" :aria-label="`${settings?.headerText || 'Studio'} home`">
-          <HeaderIdentity image-url="/icon.gif" :text="settings?.headerText || 'Studio'" />
+          <HeaderIdentity class="index-image-logo" image-url="/icon.gif" :text="settings?.headerText || 'Studio'" />
+          <span class="index-text-logo">mmaze.studio</span>
         </NuxtLink>
         <section class="case-filter" aria-label="Filter projects by category">
           <div class="filter-options">
@@ -193,6 +194,8 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
   transform: translateY(calc(-100% - var(--space)));
   pointer-events: none;
 }
+
+.index-text-logo { display: none; }
 
 .index-logo {
   display: block;
@@ -288,23 +291,26 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
 }
 
 @media (max-width: 720px) {
-  .index-logo :deep(.image-logo) {
+  .index-image-logo { display: none; }
+  .index-text-logo {
     display: block;
-    width: 40px;
-    height: 40px;
+    font-size: clamp(11px, 3.3vw, 20px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.00em;
   }
 
   .index-toolbar {
     min-height: calc(40px + var(--space) / 2);
     grid-template-columns: 1fr;
-    padding-bottom: calc(var(--space) / 2);
+    padding-bottom: calc(var(--space) * 2);
     padding-left: 0;
   }
   .index-logo {
     position: static;
     justify-self: start;
-    margin-left: calc(var(--space) * -.75);
-    margin-top: calc(var(--space) * -.75);
+    margin-left: 0;
+    margin-top: 0;
   }
   .case-filter { grid-column: 1; }
 }
@@ -312,7 +318,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
 @media (max-width: 520px) {
   .index-toolbar {
     grid-template-columns: 1fr;
-    padding-bottom: var(--space);
+    padding-bottom: calc(var(--space) * 2);
   }
   .case-filter {
     grid-column: 1;

@@ -52,13 +52,13 @@ const headline = computed(() => settings.value?.heroHeadline || 'Ideas, identiti
 }
 
 .home-grid :deep(.card) {
-  display: inline-block;
+  display: inline-flex;
+  vertical-align: top;
   width: 100%;
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
   margin-bottom: calc(var(--space) * 1.5);
-    display: flex;
   flex-direction: column;
   gap: calc(var(--space) * .5);
 }

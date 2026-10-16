@@ -31,8 +31,8 @@ const contactEmail = computed(() => {
   <PageFrame>
     <main class="page contact">
       <section class="contact-time" aria-label="Current time in GMT+2">
-        <time>{{ localTime || '––:––' }}</time>
-        <span>(GMT+2)</span>
+        <span class="contact-time-label">Office time</span>
+        <span class="contact-time-value"><time>{{ localTime || '––:––' }}</time>(GMT+2)</span>
       </section>
       <h1 class="display">Tell us about your<br>project</h1>
       <div class="contact-form">
@@ -64,11 +64,13 @@ const contactEmail = computed(() => {
   right: var(--space);
   display: flex;
   align-items: center;
-  gap: .5em;
+  gap: .75em;
   font-size: var(--small);
   font-weight: 600;
   line-height: 1.3;
 }
+.contact-time-label { opacity: var(--opacity-secondary); white-space: nowrap; }
+.contact-time-value { white-space: nowrap; }
 
 h1,
 .contact-email { grid-column: 1; min-width: 0; }

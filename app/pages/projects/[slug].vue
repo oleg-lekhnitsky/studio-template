@@ -86,10 +86,9 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
           <p v-for="(paragraph, index) in introductionParagraphs" :key="index">{{ paragraph }}</p>
         </div>
       </header>
-      <div v-if="remainingContent.length" class="media-grid">
+      <div v-if="!remainingContent.length && !leadContent.length" class="empty-media display">Content coming soon.</div>
+      <div v-if="remainingContent.length || current.year || project?.cast?.length" class="media-grid">
         <CaseMediaBlock v-for="block in remainingContent" :key="block._key" :block="block" />
-      </div>
-      <div v-else-if="!leadContent.length" class="empty-media display">Content coming soon.</div>
       <dl v-if="current.year || project?.cast?.length" class="case-details">
         <template v-if="current.year">
           <dt>Year</dt>
@@ -110,6 +109,7 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
           </dd>
         </template>
       </dl>
+      </div>
       <NextCases :current-id="current._id" />
     </main>
   </PageFrame>
@@ -133,11 +133,13 @@ if (!current.value) throw createError({ statusCode: 404, statusMessage: 'Case no
 }
 
 .case-details {
+  grid-column: span 12;
   display: grid;
+  align-items: start;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space);
   margin: 0;
-  padding: calc(var(--space) * 3) var(--space);
+  padding-block: calc(var(--space) * 3);
 }
 
 .case-details dt,
@@ -218,16 +220,12 @@ p {
     grid-template-columns: minmax(0, 1fr);
     align-items: start;
     gap: var(--space);
-    padding-top: calc(var(--space) * 5);
-    padding-bottom: calc(var(--space) * 2);
+    padding-block: calc(var(--space) * 5);
     padding-inline: 0;
-    margin: 0 var(--space) var(--space);
+    margin: 0 0 var(--space);
     font-size: var(--small);
     line-height: 1.3;
   }
-
-  .media-grid:has(+ .case-details) { padding-bottom: 0; }
-  .media-grid:has(+ .case-details) :deep(> :last-child) { margin-bottom: 0; }
 
   .case-details dd + .team-label { margin-top: calc(var(--space) * 2); }
 }

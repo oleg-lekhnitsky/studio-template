@@ -40,6 +40,7 @@ const posterUrl = useSanityImage()
 .visual {
   overflow: hidden;
   border-radius: var(--radius);
+  clip-path: inset(0 round var(--radius));
 }
 
 .visual:has(.placeholder) {

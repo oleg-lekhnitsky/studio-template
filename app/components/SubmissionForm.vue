@@ -192,7 +192,7 @@ form.is-sent { visibility: hidden; }
   padding: 0;
   border-radius: var(--radius);
   color: var(--foreground);
-  font-size: var(--medium);
+  font-size: calc(var(--medium) / 1.625);
   letter-spacing: var(--letter-spacing-medium);
   font-weight: 600;
   line-height: 1.2;
