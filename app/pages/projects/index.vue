@@ -139,6 +139,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
           <HeaderIdentity class="index-image-logo" image-url="/icon.gif" :text="settings?.headerText || 'Studio'" />
           <span class="index-text-logo">mmaze.studio</span>
         </NuxtLink>
+        <SiteNavigation class="index-mobile-navigation" :settings="settings" />
         <section class="case-filter" aria-label="Filter projects by category">
           <div class="filter-options">
             <button v-for="category in categories" :key="category" type="button"
@@ -196,6 +197,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
 }
 
 .index-text-logo { display: none; }
+.index-mobile-navigation { display: none; }
 
 .index-logo {
   display: block;
@@ -302,7 +304,7 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
 
   .index-toolbar {
     min-height: calc(40px + var(--space) / 2);
-    grid-template-columns: 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     padding-bottom: calc(var(--space) * 2);
     padding-left: 0;
   }
@@ -312,17 +314,25 @@ usePageSeo(() => settings.value?.casesSeo, 'Projects — mmaze.studio', 'Selecte
     margin-left: 0;
     margin-top: 0;
   }
-  .case-filter { grid-column: 1; }
+  .index-mobile-navigation {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    font-size: clamp(11px, 3.3vw, 20px);
+    line-height: 1.2;
+  }
+  .case-filter { grid-column: 1 / -1; }
 }
 
 @media (max-width: 520px) {
   .index-toolbar {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     padding-bottom: calc(var(--space) * 2);
     gap: calc(var(--space) * 2);
   }
   .case-filter {
-    grid-column: 1;
+    grid-column: 1 / -1;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space);
