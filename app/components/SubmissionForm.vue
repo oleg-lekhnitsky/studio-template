@@ -303,6 +303,7 @@ textarea[aria-invalid='true'] {
 }
 
 @media (max-width: 720px) {
+  .form-success { font-size: calc(var(--small) * 1.625); }
   .form-actions { grid-template-columns: 1fr; }
   .submission-form--contact .primary-button { width: 100%; min-width: 0; padding: 20px; }
 }
