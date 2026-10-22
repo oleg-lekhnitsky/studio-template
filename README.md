@@ -13,7 +13,7 @@ In Sanity, create `Case` documents and compose each page with image, video, and 
 
 ## Production
 
-- Set `NUXT_PUBLIC_SITE_URL` to the canonical public origin.
+- Set `NUXT_PUBLIC_SITE_URL=https://www.mmaze.studio` in the hosting provider's production environment and redeploy. This controls canonical URLs, social metadata, structured data, and sitemap URLs. An existing hosting environment variable overrides the default in `nuxt.config.ts`.
 - Set `SANITY_API_READ_TOKEN` to enable draft preview and Visual Editing.
 - Set `SANITY_STUDIO_PREVIEW_URL` on the Studio deployment to the protected preview frontend. The Studio's Presentation tool will then offer direct links to each draft case and vacancy.
 - Configure a Sanity webhook to `POST /api/revalidate` with the `x-sanity-secret` header.

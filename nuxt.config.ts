@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     upstashRedisRestToken: process.env.UPSTASH_REDIS_REST_TOKEN,
     sanityWebhookSecret: process.env.SANITY_WEBHOOK_SECRET,
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://www.mmaze.studio',
       sanityProjectId: process.env.NUXT_PUBLIC_SANITY_PROJECT_ID || 'v8alcn6p',
       sanityDataset
     }
