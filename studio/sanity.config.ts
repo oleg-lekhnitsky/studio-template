@@ -9,7 +9,7 @@ const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'v8alcn6p'
 const isLocalStudio = process.env.NODE_ENV === 'development'
 const localPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:3000'
 const productionPreviewUrl = process.env.SANITY_STUDIO_PREVIEW_URL_PRODUCTION
-  || (isLocalStudio ? localPreviewUrl : 'https://studio-template-studio-ly5d.vercel.app')
+  || (isLocalStudio ? localPreviewUrl : 'https://mmaze.studio')
 
 const mainDocuments = defineDocuments([
   {

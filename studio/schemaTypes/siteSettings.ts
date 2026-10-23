@@ -268,6 +268,16 @@ export default defineType({
     pageSeo('jobsSeo', 'Jobs page SEO'),
     pageSeo('aboutSeo', 'About page SEO'),
     pageSeo('contactSeo', 'Contact page SEO'),
+    defineField({
+      name: 'contactHeading',
+      title: 'Legacy contact heading',
+      description: 'Retained for compatibility with older content. The website no longer uses this field.',
+      type: 'array',
+      of: [{ type: 'block' }],
+      group: 'contact',
+      hidden: true,
+      readOnly: true
+    }),
     formFields('contactFormFields', 'Contact form fields', 'contact', contactFormFields),
     formFields('jobFormFields', 'Job application form fields', 'jobs', jobFormFields),
     defineField({
