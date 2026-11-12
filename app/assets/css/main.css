@@ -47,7 +47,7 @@
   --letter-spacing: 0em;
   --letter-spacing-medium: calc(-0.015em / 0.6);
   --letter-spacing-large: calc(-0.015em / 0.4);
-  --accent: #8CC318;
+  --accent: #2BAC00;
   --radius: clamp(8px, .75vw, 16px);
   --background: #fff;
   --foreground: #141414;
