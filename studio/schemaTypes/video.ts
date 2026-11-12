@@ -28,6 +28,7 @@ export default defineType({
           { title: 'Landscape 16:9', value: '16:9' },
           { title: 'Landscape 4:3', value: '4:3' },
           { title: 'Square 1:1', value: '1:1' },
+          { title: 'Portrait 3:4', value: '3:4' },
           { title: 'Portrait 4:5', value: '4:5' },
           { title: 'Portrait 9:16', value: '9:16' }
         ],
