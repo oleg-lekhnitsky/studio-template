@@ -5,6 +5,17 @@ export default defineType({
   title: 'Case',
   type: 'document',
   fields: [
+    defineField({
+      name: 'seo',
+      title: 'SEO',
+      description: 'Optional search and sharing metadata. Empty fields use the project content.',
+      type: 'object',
+      fields: [
+        defineField({ name: 'title', title: 'SEO title', type: 'string', description: 'Leave empty to use the project title.', validation: rule => rule.max(70).warning() }),
+        defineField({ name: 'description', title: 'SEO description', type: 'text', rows: 3, description: 'Leave empty to use the introduction or preview description.', validation: rule => rule.max(160).warning() }),
+        defineField({ name: 'image', title: 'Sharing image', type: 'image', description: 'Leave empty to use the cover image. Recommended size: 1200 × 630.', options: { hotspot: true }, fields: [{ name: 'alt', title: 'Alternative text', type: 'string' }] })
+      ]
+    }),
     defineField({ name: 'title', type: 'string', validation: rule => rule.required() }),
     defineField({
       name: 'previewTitle',
@@ -101,7 +112,6 @@ export default defineType({
     defineField({
       name: 'coverVideo',
       title: 'Cover video',
-      description: 'Use a short, compressed MP4 or WebM without an audio track when possible.',
       description: 'Optional short MP4 or WebM. When present, it replaces the cover image on project grids.',
       type: 'file',
       options: { accept: 'video/mp4,video/webm' }

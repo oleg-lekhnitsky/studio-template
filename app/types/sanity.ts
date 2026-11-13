@@ -39,6 +39,7 @@ export type CaseBlock =
   | { _key: string; _type: 'textBlock'; label?: string; text?: TypedObject[]; width?: 'half' | 'full' }
 
 export interface CaseStudy extends CasePreview {
+  seo?: PageSeo
   description?: string
   content?: CaseBlock[]
   cast?: Array<{

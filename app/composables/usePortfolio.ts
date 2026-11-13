@@ -14,7 +14,7 @@ export const featuredCasesQuery = groq`*[_type == "case" && featured == true] | 
 }`
 
 export const caseQuery = groq`*[_type == "case" && slug.current == $slug][0] {
-  _id, title, "slug": slug.current, year, "categories": categories[]->title, description, cast, cover,
+  _id, title, "slug": slug.current, year, "categories": categories[]->title, summary, seo, description, cast, cover,
   "coverVideoUrl": coverVideo.asset->url, coverPoster,
   content[]{
     ...,

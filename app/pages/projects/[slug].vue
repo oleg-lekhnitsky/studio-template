@@ -9,11 +9,12 @@ const { data: project } = await useSanityQuery<CaseStudy>(caseQuery, { slug: rou
 const demo = computed(() => useDemoCases().find(item => item.slug === route.params.slug))
 const current = computed(() => project.value || demo.value)
 const imageUrl = useSanityImage()
-const metaTitle = computed(() => current.value?.title || 'Case')
-const metaDescription = computed(() => project.value?.description || current.value?.summary || 'A selected studio case study.')
+const metaTitle = computed(() => stegaClean(project.value?.seo?.title || '').trim() || stegaClean(current.value?.title || 'Case'))
+const metaDescription = computed(() => stegaClean(project.value?.seo?.description || '').trim()
+  || stegaClean(project.value?.description || current.value?.summary || 'A selected studio case study.'))
 const config = useRuntimeConfig()
 const requestUrl = useRequestURL()
-const metaImage = computed(() => imageUrl(project.value?.cover, 1200)
+const metaImage = computed(() => imageUrl(project.value?.seo?.image, 1200) || imageUrl(project.value?.cover, 1200)
   || new URL('/ogimage.png', config.public.siteUrl || requestUrl.origin).toString())
 
 useSeoMeta({
@@ -32,7 +33,7 @@ useHead({
     innerHTML: () => JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'CreativeWork',
-      name: metaTitle.value,
+      name: stegaClean(current.value?.title || 'Case'),
       description: metaDescription.value,
       image: metaImage.value,
       dateCreated: current.value?.year
